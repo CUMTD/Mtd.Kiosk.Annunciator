@@ -3,18 +3,41 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.2003
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KioskButton", "KioskButton\KioskButton.csproj", "{C19CF96E-BA90-4963-9929-48DE58C5D66D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cumtd.Signage.Kiosk.KioskButton", "KioskButton\Cumtd.Signage.Kiosk.KioskButton.csproj", "{C19CF96E-BA90-4963-9929-48DE58C5D66D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cumtd.Signage.Kiosk.SeaLevel", "SeaLevel\Cumtd.Signage.Kiosk.SeaLevel.csproj", "{B8C149A3-F24F-4B13-9B51-B38196BE9D64}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{747F3BA4-FA56-4C0A-98AA-CD1C223AD96A}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
 		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{C19CF96E-BA90-4963-9929-48DE58C5D66D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C19CF96E-BA90-4963-9929-48DE58C5D66D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C19CF96E-BA90-4963-9929-48DE58C5D66D}.Debug|x86.ActiveCfg = Debug|x86
+		{C19CF96E-BA90-4963-9929-48DE58C5D66D}.Debug|x86.Build.0 = Debug|x86
 		{C19CF96E-BA90-4963-9929-48DE58C5D66D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C19CF96E-BA90-4963-9929-48DE58C5D66D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C19CF96E-BA90-4963-9929-48DE58C5D66D}.Release|x86.ActiveCfg = Release|x86
+		{C19CF96E-BA90-4963-9929-48DE58C5D66D}.Release|x86.Build.0 = Release|x86
+		{B8C149A3-F24F-4B13-9B51-B38196BE9D64}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8C149A3-F24F-4B13-9B51-B38196BE9D64}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8C149A3-F24F-4B13-9B51-B38196BE9D64}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B8C149A3-F24F-4B13-9B51-B38196BE9D64}.Debug|x86.Build.0 = Debug|Any CPU
+		{B8C149A3-F24F-4B13-9B51-B38196BE9D64}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8C149A3-F24F-4B13-9B51-B38196BE9D64}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B8C149A3-F24F-4B13-9B51-B38196BE9D64}.Release|x86.ActiveCfg = Release|Any CPU
+		{B8C149A3-F24F-4B13-9B51-B38196BE9D64}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
