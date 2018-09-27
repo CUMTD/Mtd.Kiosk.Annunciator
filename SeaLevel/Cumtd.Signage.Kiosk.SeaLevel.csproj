@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="ButtonReader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SeaDacButton.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="ftd2xx.dll">

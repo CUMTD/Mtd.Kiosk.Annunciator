@@ -8,39 +8,30 @@ namespace Cumtd.Signage.Kiosk.KioskButton
 	{
 		private static void Main()
 		{
-			using (var reader = ButtonReader.Instance)
+			void Test(bool pressed) => Console.WriteLine(pressed ? "pressed" : "unpressed");
+			var reader = new ButtonReader(Test);
+
+
+			const int hz = 20;
+			const int sleep = 1000 / hz;
+			const int seconds = 10;
+			const int cycles = seconds * hz;
+
+			var cycle = 1;
+
+			reader.Start();
+			do
 			{
 
+				Thread.Sleep(sleep);
+				cycle++;
+			} while (cycle <= cycles);
 
-				const int hz = 20;
-				const int sleep = 1000 / hz;
-				const int seconds = 20;
-				const int cycles = seconds * hz;
+			reader.Stop();
+			Thread.Sleep(1000);
 
-				var lastState = false;
+			Console.ReadLine();
 
-				var cycle = 1;
-
-				do
-				{
-					var pressed = reader.ReadButtonState();
-					if (pressed != lastState)
-					{
-						Console.WriteLine(pressed ? "Pressed" : "Released");
-					}
-
-					lastState = pressed;
-					Thread.Sleep(sleep);
-					cycle++;
-				} while (cycle <= cycles);
-
-			}
-
-			using (var instance = ButtonReader.Instance)
-			{
-				Console.WriteLine($"Final State {instance.ReadButtonState()}");
-			}
-				Console.ReadLine();
 		}
 	}
 }

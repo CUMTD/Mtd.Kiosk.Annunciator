@@ -1,97 +1,108 @@
 using System;
-using Sealevel;
+using System.ComponentModel;
 
 namespace Cumtd.Signage.Kiosk.SeaLevel
 {
-	public sealed class ButtonReader : IDisposable
+	public sealed class ButtonReader
 	{
-		private static ButtonReader _instance { get; set; }
-		public static ButtonReader Instance => _instance ?? (_instance = new ButtonReader());
+		private BackgroundWorker Worker { get; set; }
+		private Action<bool> Callback { get; }
+		public bool IsRunning { get; private set; }
+		public bool IsFinished { get; private set; }
 
-		private SeaMAX SeaMax { get; }
-
-		private ButtonReader()
+		public ButtonReader(Action<bool> callback)
 		{
-			SeaMax = new SeaMAX();
+			Callback = callback ?? throw new ArgumentException(nameof(callback));
+			IsFinished = false;
 		}
 
-		public bool ReadButtonState()
+		public void Start()
 		{
-			Init();
-
-			var data = new byte[1];
-			SeaMax.SM_ReadDigitalInputs(0, 1, data);
-
-			return data[0] >= 1;
-		}
-
-		private void Init()
-		{
-			InitSeaDac();
-			OpenSeaMax();
-		}
-
-		private void InitSeaDac()
-		{
-			if (!SeaMax.IsSeaDACInitialized)
+			if (IsRunning)
 			{
-				SeaMax.SDL_Initialize();
-				var count = SeaMax.SDL_SearchForDevices();
-
-				if (count < 0)
-				{
-					throw new Exception($"Error {count} while searching for SDL Devices.");
-				}
-
-				if (count == 0)
-				{
-					throw new Exception("No devices found");
-				}
-
-				if (SeaMax.SDL_FirstDevice() < 0)
-				{
-					throw new Exception("Error selecting first device");
-				}
+				Console.WriteLine("Already running");
+			}
+			else if (IsFinished)
+			{
+				Console.WriteLine("Finished. Can't run again");
+			}
+			else
+			{
+				Console.WriteLine("Starting Worker");
+				Worker = GetWorker();
+				IsRunning = true;
+				Worker.RunWorkerAsync();
 			}
 		}
 
-		private void OpenSeaMax()
+		public void Stop()
 		{
-			if (!SeaMax.IsSeaMAXOpen)
-			{
-				var id = 0;
-				if (SeaMax.SDL_GetDeviceID(ref id) < 0)
-				{
-					throw new Exception("Can't get id");
-				}
-
-				if (SeaMax.SM_Open($"SeaDAC Lite {id}") < 0)
-				{
-					throw new Exception("Couldn't open read");
-				}
-			}
+			Worker?.CancelAsync();
+			IsFinished = true;
 		}
 
-		public void Dispose()
+		private BackgroundWorker GetWorker()
 		{
-			if (SeaMax == null)
+			var worker = new BackgroundWorker
 			{
-				return;
-			}
+				WorkerReportsProgress = true,
+				WorkerSupportsCancellation = true
+			};
 
-			//clean up the SDL interface to release the internally allocated memory
-			if (SeaMax.IsSeaDACInitialized)
-			{
-				Console.WriteLine("Cleaning up SDL Interface.");
-				SeaMax.SDL_Cleanup();
-			}
+			worker.DoWork += BackgroundWorker_DoWork;
+			worker.ProgressChanged += BackgroundWorker_ProgressChanged;
+			worker.RunWorkerCompleted += BackgroundWorker_RunWorkerCompleted;
 
-			//we need to remember to close the connection when we are done with it
-			if (SeaMax.IsSeaMAXOpen)
-			{
-				Console.WriteLine("Closing SeaMAX Connection.");
-				SeaMax.SM_Close();
-			}
+			return worker;
 		}
+
+		#region BackgroundWorker Event Handlers
+
+		private static void BackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
+		{
+			var bgWorker = (BackgroundWorker)sender;
+
+			using (var seaDacButton = new SeaDacButton())
+			{
+				// the last button state
+				bool? lastState = null;
+				var bytes = new byte[1];
+
+				while (!bgWorker.CancellationPending)
+				{
+					// listen if not already listening
+					seaDacButton.ListenChange(ref bytes, 16);
+
+					// 1 == true
+					var current = bytes[0] >= 1;
+
+					// last state is diferent from curent
+					if (!lastState.HasValue || current != lastState.Value)
+					{
+						bgWorker.ReportProgress(current ? 1 : 0);
+					}
+
+					// update last state
+					lastState = current;
+				}
+
+			}
+
+			e.Cancel = true;
+		}
+
+		private void BackgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+		{
+			var pushed = e.ProgressPercentage == 1;
+			Callback(pushed);
+		}
+
+		private void BackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+		{
+			IsRunning = false;
+			Console.WriteLine("RunWorkerCompleted");
+		}
+
+		#endregion BackgroundWorker Event Handlers
 	}
 }
