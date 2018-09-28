@@ -31,14 +31,11 @@ namespace Cumtd.Signage.Kiosk.Annunciator
 				logger(read);
 				synth.Speak(read);
 			}
-
-			logger(string.Empty);
-
 		}
 
 		public static void ReadError(Action<string> logger = null) =>
 			ReadLine("There was an error loading departures. Please try again later or call 384-8188.", logger ?? _defaultLogger);
-		
+
 		private static void ReadLine(string line, Action<string> logger)
 		{
 			var synth = GetSynth();

@@ -7,11 +7,13 @@ namespace Cumtd.Signage.Kiosk.SeaLevel
 	{
 		private BackgroundWorker Worker { get; set; }
 		private Action<bool> Callback { get; }
+		private Action<string> Logger { get; }
 		public bool IsRunning { get; private set; }
 		public bool IsFinished { get; private set; }
 
-		public ButtonReader(Action<bool> callback)
+		public ButtonReader(Action<bool> callback, Action<string> logger)
 		{
+			Logger = logger ?? (_ => { });
 			Callback = callback ?? throw new ArgumentException(nameof(callback));
 			IsFinished = false;
 		}
@@ -20,15 +22,15 @@ namespace Cumtd.Signage.Kiosk.SeaLevel
 		{
 			if (IsRunning)
 			{
-				Console.WriteLine("Already running");
+				Logger("Already running");
 			}
 			else if (IsFinished)
 			{
-				Console.WriteLine("Finished. Can't run again");
+				Logger("Finished. Can't run again");
 			}
 			else
 			{
-				Console.WriteLine("Starting Worker");
+				Logger("Starting Worker");
 				Worker = GetWorker();
 				IsRunning = true;
 				Worker.RunWorkerAsync();
@@ -58,11 +60,11 @@ namespace Cumtd.Signage.Kiosk.SeaLevel
 
 		#region BackgroundWorker Event Handlers
 
-		private static void BackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
+		private void BackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
 		{
 			var bgWorker = (BackgroundWorker)sender;
 
-			using (var seaDacButton = new SeaDacButton())
+			using (var seaDacButton = new SeaDacButton(Logger))
 			{
 				// the last button state
 				bool? lastState = null;
@@ -100,7 +102,7 @@ namespace Cumtd.Signage.Kiosk.SeaLevel
 		private void BackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
 		{
 			IsRunning = false;
-			Console.WriteLine("RunWorkerCompleted");
+			Logger("RunWorkerCompleted");
 		}
 
 		#endregion BackgroundWorker Event Handlers

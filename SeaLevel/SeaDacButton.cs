@@ -5,10 +5,12 @@ namespace Cumtd.Signage.Kiosk.SeaLevel
 {
 	internal class SeaDacButton : IDisposable
 	{
+		private Action<string> Logger { get; }
 		private SeaMAX SeaMax { get; set; }
-
-		public SeaDacButton()
+		
+		public SeaDacButton(Action<string> logger)
 		{
+			Logger = logger ?? Console.WriteLine;
 			SeaMax = new SeaMAX();
 		}
 
@@ -84,14 +86,14 @@ namespace Cumtd.Signage.Kiosk.SeaLevel
 			//clean up the SDL interface to release the internally allocated memory
 			if (SeaMax.IsSeaDACInitialized)
 			{
-				Console.WriteLine("Cleaning up SDL Interface.");
+				Logger("Cleaning up SDL Interface.");
 				SeaMax.SDL_Cleanup();
 			}
 
 			//we need to remember to close the connection when we are done with it
 			if (SeaMax.IsSeaMAXOpen)
 			{
-				Console.WriteLine("Closing SeaMAX Connection.");
+				Logger("Closing SeaMAX Connection.");
 				SeaMax.SM_Close();
 			}
 
