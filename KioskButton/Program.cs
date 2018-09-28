@@ -1,6 +1,5 @@
 using System;
-using System.Threading;
-using Cumtd.Signage.Kiosk.SeaLevel;
+using Topshelf;
 
 namespace Cumtd.Signage.Kiosk.KioskButton
 {
@@ -8,30 +7,27 @@ namespace Cumtd.Signage.Kiosk.KioskButton
 	{
 		private static void Main()
 		{
-			void Test(bool pressed) => Console.WriteLine(pressed ? "pressed" : "unpressed");
-			var reader = new ButtonReader(Test);
+			var rc = HostFactory.Run(x => { x.Service<AnnunciatorService>(s =>
+				{
+					s.ConstructUsing(_ => new AnnunciatorService());
+					s.WhenStarted(aService => aService.Start());
+					s.WhenStopped(aService => aService.Stop());
+				});
+				x.RunAsNetworkService();
+				x.StartAutomatically();
 
+				x.EnableServiceRecovery(r =>
+				{
+					r.RestartComputer(1, "Annunciator Service Stopped. Restarting...");
+					r.SetResetPeriod(1);
+				});
 
-			const int hz = 20;
-			const int sleep = 1000 / hz;
-			const int seconds = 10;
-			const int cycles = seconds * hz;
+				x.SetDescription("Annunciator Service");
+				x.SetDisplayName("Annunciator Service");
+				x.SetServiceName("mtd-annunciator-service");
+			});
 
-			var cycle = 1;
-
-			reader.Start();
-			do
-			{
-
-				Thread.Sleep(sleep);
-				cycle++;
-			} while (cycle <= cycles);
-
-			reader.Stop();
-			Thread.Sleep(1000);
-
-			Console.ReadLine();
-
+			Environment.ExitCode = (int)Convert.ChangeType(rc, rc.GetTypeCode());
 		}
 	}
 }

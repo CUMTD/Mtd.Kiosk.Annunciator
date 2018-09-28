@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lexicon version="1.0"
+      xmlns="http://www.w3.org/2005/01/pronunciation-lexicon"
+      alphabet="ipa" xml:lang="en-US">
+    <lexeme>
+        <grapheme> E </grapheme>
+        <phoneme> ist </phoneme>
+    </lexeme>
+    <lexeme>
+        <grapheme> W </grapheme>
+        <phoneme> wɛst </phoneme>
+    </lexeme>
+    <lexeme>
+        <grapheme> N </grapheme>
+        <phoneme> nɔrθ </phoneme>
+    </lexeme>
+    <lexeme>
+        <grapheme> S </grapheme>
+        <phoneme> saʊθ </phoneme>
+    </lexeme>
+    <lexeme>
+        <grapheme> C </grapheme>
+        <phoneme> ʧæmˈpeɪn </phoneme>
+    </lexeme>
+    <lexeme>
+        <grapheme> U </grapheme>
+        <phoneme> ərˈbænə </phoneme>
+    </lexeme>
+</lexicon>
