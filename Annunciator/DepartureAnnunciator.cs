@@ -11,7 +11,7 @@ namespace Cumtd.Signage.Kiosk.Annunciator
 	{
 		private static readonly Action<string> _defaultLogger = (_ => { });
 
-		public static void ReadDepartures(IReadOnlyCollection<Departure> departures, Action<string> logger = null)
+		public static void ReadDepartures(string stopName, IReadOnlyCollection<Departure> departures, Action<string> logger = null)
 		{
 			logger = logger ?? _defaultLogger;
 
@@ -21,15 +21,17 @@ namespace Cumtd.Signage.Kiosk.Annunciator
 			if (departures == null || departures.Count == 0)
 			{
 				ReadLine("There are no upcoming departures at this time.", logger);
-				return;
 			}
-
-			// read each line
-			foreach (var departure in departures)
+			else
 			{
-				var read = $"{departure.Name} {departure.JoinWord} {departure.Time}";
-				logger(read);
-				synth.Speak(read);
+				ReadLine($"Departures for {stopName} as of {DateTime.Now:h:mm tt}", logger);
+				// read each line
+				foreach (var departure in departures)
+				{
+					var read = $"{departure.Name} {departure.JoinWord} {departure.Time}";
+					logger(read);
+					synth.Speak(read);
+				}
 			}
 		}
 

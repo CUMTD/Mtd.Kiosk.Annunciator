@@ -92,7 +92,7 @@ namespace Cumtd.Signage.Kiosk.KioskButton
 						}
 
 						Logger.DebugFormat("Fetched {0} departures", departures.Length);
-						DepartureAnnunciator.ReadDepartures(departures, Logger.Info);
+						DepartureAnnunciator.ReadDepartures("Illini Union", departures, Logger.Info);
 						Logger.Debug("Done reading");
 						Reading = false;
 					}
