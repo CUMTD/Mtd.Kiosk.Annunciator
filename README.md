@@ -12,14 +12,14 @@ Read departures when the annunciator button is pressed on a kiosk.
 
 ## Projects
 
-### KioskButton
+### Cumtd.Signage.Kiosk.KioskButton
 This is the main [TopShelf](http://topshelf-project.com/) service.
 
-### Annunciator
+### Cumtd.Signage.Kiosk.Annunciator
 Handles the text to speach.
 
-### RealTime
+### Cumtd.Signage.Kiosk.RealTime
 Handles the fetching and conversion of real-time information.
 
-### SeaLevel
+### Cumtd.Signage.Kiosk.SeaLevel
 Handles the interaction with the SeaLevel Sea DAC button.
