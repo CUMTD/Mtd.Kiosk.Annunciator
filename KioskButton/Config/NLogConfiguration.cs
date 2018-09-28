@@ -3,11 +3,10 @@ using NLog;
 using NLog.Config;
 using NLog.Targets;
 
-namespace Cumtd.Signage.Kiosk.KioskButton
+namespace Cumtd.Signage.Kiosk.KioskButton.Config
 {
-	public static class NLogLogManager
+	public static class NLogConfiguration
 	{
-
 		private static readonly Lazy<LogFactory> _instance = new Lazy<LogFactory>(BuildLogFactory);
 		public static LogFactory Instance => _instance.Value;
 

@@ -13,7 +13,6 @@ namespace Cumtd.Signage.Kiosk.KioskButton
 		public bool Disposed { get; private set; }
 
 		private bool _newState;
-
 		public bool NewState
 		{
 			get
@@ -25,7 +24,6 @@ namespace Cumtd.Signage.Kiosk.KioskButton
 		}
 
 		private bool _pressed;
-
 		public bool Pressed
 		{
 			get
@@ -42,14 +40,17 @@ namespace Cumtd.Signage.Kiosk.KioskButton
 
 		public bool Reading { get; private set; }
 
+		private ConfigurationManager Config { get; }
+		
 		private Timer Timer { get; }
 
 		private ButtonReader Reader { get; }
 
 		private LogWriter Logger { get; }
-
+		
 		public AnnunciatorService()
 		{
+			Config = ConfigurationManager.Config;
 			Logger = HostLogger.Current.Get("kiosk-annunciator");
 			Timer = new Timer(33)
 			{
@@ -78,7 +79,7 @@ namespace Cumtd.Signage.Kiosk.KioskButton
 						{
 							try
 							{
-								var getTask = client.GetRealtime("b20297e2-4c13-49b9-be4f-b1842f6108c9");
+								var getTask = client.GetRealtime(Config.Id);
 								getTask.Wait();
 								departures = getTask.Result;
 							}
@@ -92,7 +93,7 @@ namespace Cumtd.Signage.Kiosk.KioskButton
 						}
 
 						Logger.DebugFormat("Fetched {0} departures", departures.Length);
-						DepartureAnnunciator.ReadDepartures("Illini Union", departures, Logger.Info);
+						DepartureAnnunciator.ReadDepartures(Config.Name, departures, Logger.Info);
 						Logger.Debug("Done reading");
 						Reading = false;
 					}

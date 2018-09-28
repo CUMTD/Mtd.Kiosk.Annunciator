@@ -1,4 +1,5 @@
 using System;
+using Cumtd.Signage.Kiosk.KioskButton.Config;
 using NLog;
 using Topshelf;
 
@@ -8,17 +9,19 @@ namespace Cumtd.Signage.Kiosk.KioskButton
 	{
 		private static void Main()
 		{
-			var host = HostFactory.New(config =>
+			var config = ConfigurationManager.Config;
+
+			var host = HostFactory.New(hostConfigurator =>
 			{
 				// display
-				config.SetServiceName("mtd-annunciator-service");
-				config.SetDisplayName("Annunciator Service");
-				config.SetDescription("Annunciator Service");
+				hostConfigurator.SetServiceName("mtd-annunciator-service");
+				hostConfigurator.SetDisplayName("Annunciator Service");
+				hostConfigurator.SetDescription("Annunciator Service");
 
 				// behavior
-				config.EnableShutdown();
-				config.StartAutomatically();
-				config.Service<AnnunciatorService>(serviceConfigurator =>
+				hostConfigurator.EnableShutdown();
+				hostConfigurator.StartAutomatically();
+				hostConfigurator.Service<AnnunciatorService>(serviceConfigurator =>
 				{
 					serviceConfigurator.ConstructUsing(_ => new AnnunciatorService());
 					serviceConfigurator.WhenStarted(aService => aService.Start());
@@ -27,18 +30,18 @@ namespace Cumtd.Signage.Kiosk.KioskButton
 				});
 
 				// permissions
-				config.RunAsNetworkService();
+				hostConfigurator.RunAsNetworkService();
 
 				// recovery
-				config.EnableServiceRecovery(serviceRecoveryConfigurator =>
+				hostConfigurator.EnableServiceRecovery(serviceRecoveryConfigurator =>
 				{
 					serviceRecoveryConfigurator.RestartComputer(1, "Annunciator Service Stopped. Restarting...");
 					serviceRecoveryConfigurator.SetResetPeriod(1);
 				});
 
 				// logging
-				config.DependsOnEventLog();
-				config.UseNLog(NLogLogManager.Instance);
+				hostConfigurator.DependsOnEventLog();
+				hostConfigurator.UseNLog(config.NLogFactory);
 			});
 
 			var exitCode = host.Run();
