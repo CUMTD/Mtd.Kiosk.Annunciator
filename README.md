@@ -1,4 +1,4 @@
-# KioskAnnunciatorButton
+# Kiosk Annunciator Button
 Read departures when the annunciator button is pressed on a kiosk.
 
 ## Installation
