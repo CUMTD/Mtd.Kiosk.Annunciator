@@ -28,7 +28,6 @@ namespace Cumtd.Signage.Kiosk.RealTime.Models
 
 		internal Departure(DataItem name, DataItem time)
 		{
-
 			Name = DirectionRegex.Replace(name.Value, "$1 $2");
 			Time = time.Value.Replace("min", "minute");
 		}

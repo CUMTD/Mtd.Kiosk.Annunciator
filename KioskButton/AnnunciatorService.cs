@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
 using Cumtd.Signage.Kiosk.Annunciator;
@@ -37,6 +38,8 @@ namespace Cumtd.Signage.Kiosk.KioskButton
 			}
 		}
 
+		public bool Reading { get; private set; }
+
 		private Timer Timer { get; }
 
 		private ButtonReader Reader { get; }
@@ -56,17 +59,28 @@ namespace Cumtd.Signage.Kiosk.KioskButton
 		{
 			if (NewState)
 			{
-				if (Pressed)
+				if (Pressed && ! Reading)
 				{
+					Reading = true;
 					Departure[] departures;
 					using (var client = new RealTimeClient())
 					{
-						var getTask = client.GetRealtime("b20297e2-4c13-49b9-be4f-b1842f6108c9");
-						getTask.Wait();
-						departures = getTask.Result;
+						try
+						{
+							var getTask = client.GetRealtime("b20297e2-4c13-49b9-be4f-b1842f6108c9");
+							getTask.Wait();
+							departures = getTask.Result;
+						}
+						catch (Exception)
+						{
+							DepartureAnnunciator.ReadError();
+							return;
+						}
+						
 					}
 
 					DepartureAnnunciator.ReadDepartures(departures, Console.WriteLine);
+					Reading = false;
 				}
 			}
 		}
