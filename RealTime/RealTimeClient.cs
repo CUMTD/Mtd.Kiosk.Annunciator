@@ -37,7 +37,7 @@ namespace Cumtd.Signage.Kiosk.RealTime
 		private async Task<string> GetJson(string id)
 		{
 			var result = await HttpClient
-				.GetAsync($"https://kiosk.mtd.org/umbraco/api/realtime/IPDisplayDepartures/?id={id}")
+				.GetAsync($"https://kiosk.mtd.org/umbraco/api/realtime/IPDisplayDepartures/?id={id}&log=false")
 				.ConfigureAwait(false);
 
 			return await result

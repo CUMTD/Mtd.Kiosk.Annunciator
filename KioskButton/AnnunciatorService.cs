@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Timers;
 using Cumtd.Signage.Kiosk.Annunciator;
-using Cumtd.Signage.Kiosk.SeaLevel;
+using Cumtd.Signage.Kiosk.KioskButton.Readers;
 using Cumtd.Signage.Kiosk.RealTime;
 using Cumtd.Signage.Kiosk.RealTime.Models;
 using Topshelf.Logging;
@@ -12,42 +14,17 @@ namespace Cumtd.Signage.Kiosk.KioskButton
 	{
 		public bool Disposed { get; private set; }
 
-		private bool _newState;
-		public bool NewState
-		{
-			get
-			{
-				var returnVal = _newState;
-				_newState = false;
-				return returnVal;
-			}
-		}
-
-		private bool _pressed;
-		public bool Pressed
-		{
-			get
-			{
-				_newState = false;
-				return _pressed;
-			}
-			set
-			{
-				_newState = true;
-				_pressed = value;
-			}
-		}
-
 		public bool Reading { get; private set; }
 
 		private ConfigurationManager Config { get; }
-		
+
 		private Timer Timer { get; }
 
-		private ButtonReader Reader { get; }
+		private IButtonReader[] ButtonReaders { get; }
+
 
 		private LogWriter Logger { get; }
-		
+
 		public AnnunciatorService()
 		{
 			Config = ConfigurationManager.Config;
@@ -57,50 +34,51 @@ namespace Cumtd.Signage.Kiosk.KioskButton
 				AutoReset = true
 			};
 			Timer.Elapsed += Timer_Elapsed;
-			Reader = new ButtonReader(value => Pressed = value, Logger.Debug);
-			Reader.Start();
+
+			var readers = new List<IButtonReader>
+			{
+				new AltShiftPKeyboardReader(Logger)
+			};
+
+			if (Config.UseSeaDac)
+			{
+				readers.Add(new SeaLevelButtonReader(Logger));
+			}
+
+			ButtonReaders = readers.ToArray();
 		}
 
 		private void Timer_Elapsed(object sender, ElapsedEventArgs e)
 		{
-			if (NewState)
+			if (!Reading)
 			{
-				var pressed = Pressed;
-				Logger.DebugFormat("New State: {0}", pressed ? "Pressed" : "Unpressed");
-				if (pressed)
+				var pressed = ButtonReaders.Where(br => br.Pressed).ToArray();
+				if (pressed.Length > 0)
 				{
-					if (!Reading)
+					Logger.Info($"{pressed.First()} pressed");
+					Reading = true;
+					Departure[] departures;
+					using (var client = new RealTimeClient())
 					{
-
-						Logger.Debug("Reading");
-						Reading = true;
-						Departure[] departures;
-						using (var client = new RealTimeClient())
+						try
 						{
-							try
-							{
-								var getTask = client.GetRealtime(Config.Id);
-								getTask.Wait();
-								departures = getTask.Result;
-							}
-							catch (Exception ex)
-							{
-								Logger.Error("Error getting departures", ex);
-								DepartureAnnunciator.ReadError(Logger.Info);
-								return;
-							}
-
+							var getTask = client.GetRealtime(Config.Id);
+							getTask.Wait();
+							departures = getTask.Result;
+						}
+						catch (Exception ex)
+						{
+							Logger.Error("Error getting departures", ex);
+							DepartureAnnunciator.ReadError(Logger.Info);
+							return;
 						}
 
-						Logger.DebugFormat("Fetched {0} departures", departures.Length);
-						DepartureAnnunciator.ReadDepartures(Config.Name, departures, Logger.Info);
-						Logger.Debug("Done reading");
-						Reading = false;
 					}
-					else
-					{
-						Logger.Debug("Already reading");
-					}
+
+					Logger.DebugFormat("Fetched {0} departures", departures.Length);
+					DepartureAnnunciator.ReadDepartures(Config.Name, departures, Logger.Info);
+					Logger.Debug("Done reading");
+					Reading = false;
 				}
 			}
 		}
@@ -128,7 +106,10 @@ namespace Cumtd.Signage.Kiosk.KioskButton
 			Logger.Debug("Disposing Service");
 			Disposed = true;
 			Timer.Elapsed -= Timer_Elapsed;
-			Reader.Stop();
+			foreach (var reader in ButtonReaders)
+			{
+				reader.Dispose();
+			}
 			Timer.Stop();
 		}
 	}

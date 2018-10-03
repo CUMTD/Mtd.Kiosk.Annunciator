@@ -22,11 +22,13 @@ namespace Cumtd.Signage.Kiosk.KioskButton
 	    public LogFactory NLogFactory => NLogConfiguration.Instance;
 		public string Id { get; }
 		public string Name { get; }
+		public bool UseSeaDac { get; }
 
 	    private ConfigurationManager()
 	    {
 		    var settings = ReadSettings<ButtonConfig>();
 		    Id = settings.Id;
+		    UseSeaDac = settings.UseSeaDac;
 		    var getTask = GetName(Id);
 		    getTask.Wait();
 		    Name = getTask.Result;
