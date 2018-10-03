@@ -9,7 +9,7 @@ namespace Cumtd.Signage.Kiosk.Annunciator
 {
 	public static class DepartureAnnunciator
 	{
-		private static readonly Action<string> _defaultLogger = (_ => { });
+		private static readonly Action<string> _defaultLogger = _ => { };
 
 		public static void ReadDepartures(string stopName, IReadOnlyCollection<Departure> departures, Action<string> logger = null)
 		{

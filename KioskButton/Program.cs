@@ -1,6 +1,4 @@
 using System;
-using Cumtd.Signage.Kiosk.KioskButton.Config;
-using NLog;
 using Topshelf;
 
 namespace Cumtd.Signage.Kiosk.KioskButton
