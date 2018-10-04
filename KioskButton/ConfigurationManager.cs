@@ -9,24 +9,23 @@ using NLog;
 
 namespace Cumtd.Signage.Kiosk.KioskButton
 {
-    public class ConfigurationManager
+    internal sealed class ConfigurationManager
     {
 	    private static readonly Lazy<ConfigurationManager> _config =
 		    new Lazy<ConfigurationManager>(() => new ConfigurationManager());
 
 	    public static ConfigurationManager Config => _config.Value;
 
-	    public LogFactory NLogFactory => NLogConfiguration.Instance;
-		public string Id { get; }
+		public ButtonConfig ButtonConfig { get; }
+	    public LogFactory NLogFactory { get; }
 		public string Name { get; }
-		public bool UseSeaDac { get; }
 
 	    private ConfigurationManager()
 	    {
 		    var settings = ReadSettings<ButtonConfig>();
-		    Id = settings.Id;
-		    UseSeaDac = settings.UseSeaDac;
-		    var getTask = GetName(Id);
+		    ButtonConfig = settings;
+		    NLogFactory = NLogConfiguration.BuildLogFactory(ButtonConfig.Logging);
+		    var getTask = GetName(settings.Id);
 		    getTask.Wait();
 		    Name = getTask.Result;
 	    }
@@ -34,7 +33,7 @@ namespace Cumtd.Signage.Kiosk.KioskButton
 	    private static T ReadSettings<T>()
 	    {
 		    var basePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Config");
-			var fileNameBase = $"{typeof(T).Name}";
+			var fileNameBase = typeof(T).Name;
 		    var file = new FileInfo(Path.Combine(basePath, $"{fileNameBase}.json"));
 
 		    if (file.Exists)

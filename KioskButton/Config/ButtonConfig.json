@@ -1,4 +1,13 @@
 {
 	"id": "b20297e2-4c13-49b9-be4f-b1842f6108c9",
-	"useSeaDac": false
+	"readers": {
+		"useSeaDac": false,
+		"usePanicButton": true
+	},
+	"logging": {
+		"console": "info",
+		"event": "info"
+	}
 }
+
+// Logging Levels: "trace", "debug", "info", "warn", "error", "fatal", "off"

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Timers;
 using Cumtd.Signage.Kiosk.Annunciator;
@@ -35,14 +36,21 @@ namespace Cumtd.Signage.Kiosk.KioskButton
 			};
 			Timer.Elapsed += Timer_Elapsed;
 
-			var readers = new List<IButtonReader>
-			{
-				new AltShiftPKeyboardReader(Logger)
-			};
 
-			if (Config.UseSeaDac)
+			var readers = new List<IButtonReader>();
+			if (Config.ButtonConfig.Readers.UseSeaDac)
 			{
 				readers.Add(new SeaLevelButtonReader(Logger));
+			}
+
+			if (Config.ButtonConfig.Readers.UsePanicButton)
+			{
+				readers.Add(new AltShiftPKeyboardReader(Logger));
+			}
+
+			if (readers.Count == 0)
+			{
+				throw new ConfigurationErrorsException("Must use at least one button reader");
 			}
 
 			ButtonReaders = readers.ToArray();
@@ -62,7 +70,7 @@ namespace Cumtd.Signage.Kiosk.KioskButton
 					{
 						try
 						{
-							var getTask = client.GetRealtime(Config.Id);
+							var getTask = client.GetRealtime(Config.ButtonConfig.Id);
 							getTask.Wait();
 							departures = getTask.Result;
 						}

@@ -1,21 +1,17 @@
-using System;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
 
 namespace Cumtd.Signage.Kiosk.KioskButton.Config
 {
-	public static class NLogConfiguration
+	internal static class NLogConfiguration
 	{
-		private static readonly Lazy<LogFactory> _instance = new Lazy<LogFactory>(BuildLogFactory);
-		public static LogFactory Instance => _instance.Value;
-
-		private static LogFactory BuildLogFactory() => new LogFactory
+		public static LogFactory BuildLogFactory(Logging loggingConfig) => new LogFactory
 		{
-			Configuration = GetConfig()
+			Configuration = GetConfig(loggingConfig)
 		};
 
-		private static LoggingConfiguration GetConfig()
+		private static LoggingConfiguration GetConfig(Logging loggingConfig)
 		{
 			var config = new LoggingConfiguration();
 
@@ -33,8 +29,8 @@ namespace Cumtd.Signage.Kiosk.KioskButton.Config
 			config.AddTarget("event", eventLogTarget);
 
 			// and rules
-			config.LoggingRules.Add(new LoggingRule("*", LogLevel.Info, consoleTarget));
-			config.LoggingRules.Add(new LoggingRule("*", LogLevel.Warn, eventLogTarget));
+			config.LoggingRules.Add(new LoggingRule("*", loggingConfig.ConsoleLogLevel, consoleTarget));
+			config.LoggingRules.Add(new LoggingRule("*", loggingConfig.EventLogLevel, eventLogTarget));
 
 			return config;
 		}
