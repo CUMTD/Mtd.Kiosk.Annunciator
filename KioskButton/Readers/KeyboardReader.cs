@@ -16,11 +16,9 @@ namespace Cumtd.Signage.Kiosk.KioskButton.Readers
 		{
 			get
 			{
+				Logger.Debug($"Reading {Name}");
 				var state = Console.KeyAvailable && Match(Console.ReadKey());
-				if (state)
-				{
-					Logger.Debug($"{Name} pressed");
-				}
+				Logger.Debug($"{Name} {(state ? "pressed" : "not pressed")}");
 				return state;
 			}
 		}
