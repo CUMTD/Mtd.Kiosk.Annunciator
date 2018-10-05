@@ -1,5 +1,6 @@
 using System;
 using Topshelf;
+using Topshelf.Logging;
 
 namespace Cumtd.Signage.Kiosk.KioskButton
 {
@@ -29,6 +30,13 @@ namespace Cumtd.Signage.Kiosk.KioskButton
 
 				// permissions
 				hostConfigurator.RunAsNetworkService();
+
+				// exception handling
+				hostConfigurator.OnException(ex =>
+				{
+					var logger = HostLogger.Current.Get("kiosk-annunciator-error-handler");
+					logger.Error("Unhandled error in annunciator service", ex);
+				});
 
 				// recovery
 				hostConfigurator.EnableServiceRecovery(serviceRecoveryConfigurator =>
