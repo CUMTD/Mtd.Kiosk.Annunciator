@@ -23,7 +23,6 @@ namespace Cumtd.Signage.Kiosk.KioskButton
 
 		private IButtonReader[] ButtonReaders { get; }
 
-
 		private LogWriter Logger { get; }
 
 		public AnnunciatorService()
@@ -35,16 +34,17 @@ namespace Cumtd.Signage.Kiosk.KioskButton
 				AutoReset = true
 			};
 			Timer.Elapsed += Timer_Elapsed;
-
-
+			
 			var readers = new List<IButtonReader>();
 			if (Config.ButtonConfig.Readers.UseSeaDac)
 			{
+				Logger.Debug($"Adding {nameof(SeaLevelButtonReader)} reader");
 				readers.Add(new SeaLevelButtonReader(Logger));
 			}
 
 			if (Config.ButtonConfig.Readers.UsePanicButton)
 			{
+				Logger.Debug($"Adding {nameof(AltShiftPKeyboardReader)} reader");
 				readers.Add(new AltShiftPKeyboardReader(Logger));
 			}
 
@@ -63,7 +63,7 @@ namespace Cumtd.Signage.Kiosk.KioskButton
 				var pressed = ButtonReaders.Where(br => br.Pressed).ToArray();
 				if (pressed.Length > 0)
 				{
-					Logger.Info($"{pressed.First()} pressed");
+					Logger.Info($"{pressed[0].Name} pressed");
 					Reading = true;
 					Departure[] departures;
 					using (var client = new RealTimeClient())
