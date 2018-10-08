@@ -95,6 +95,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="Config\ButtonConfig.debug.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Config\ButtonConfig.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

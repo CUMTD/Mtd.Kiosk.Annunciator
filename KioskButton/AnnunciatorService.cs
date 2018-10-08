@@ -59,9 +59,11 @@ namespace Cumtd.Signage.Kiosk.KioskButton
 
 		private void Timer_Elapsed(object sender, ElapsedEventArgs e)
 		{
+			// check this every loop so we don't get double reads
+			var pressed = ButtonReaders.Where(br => br.Pressed).ToArray();
+
 			if (!Reading)
 			{
-				var pressed = ButtonReaders.Where(br => br.Pressed).ToArray();
 				if (pressed.Length > 0)
 				{
 					Logger.Info($"{pressed[0].Name} pressed");

@@ -13,7 +13,7 @@ Read departures when the annunciator button is pressed on a kiosk.
 ## Projects
 
 ### Cumtd.Signage.Kiosk.KioskButton
-This is the main [TopShelf](http://topshelf-project.com/) service.
+This is the main service. It runs as a hidden console application.
 
 ### Cumtd.Signage.Kiosk.Annunciator
 Handles the text to speach.
@@ -23,3 +23,12 @@ Handles the fetching and conversion of real-time information.
 
 ### Cumtd.Signage.Kiosk.SeaLevel
 Handles the interaction with the SeaLevel Sea DAC button.
+
+
+## Hotkeys
+When the applicaiton is running, the following hotkeys can be use:
+
+| Keys                           | Result                |
+|--------------------------------|-----------------------|
+| `CTRL` + `ALT` + `SHIFT` + `C` | Toggle Console Window |
+| `CTRL` + `ALT` + `SHIFT` + `Q` | Exit Application      |

@@ -42,6 +42,14 @@ namespace Cumtd.Signage.Kiosk.KioskButton
 			var fileNameBase = typeof(T).Name;
 			var file = new FileInfo(Path.Combine(basePath, $"{fileNameBase}.json"));
 
+#if DEBUG
+			var altFile = new FileInfo(Path.Combine(basePath, $"{fileNameBase}.debug.json"));
+			if (altFile.Exists)
+			{
+				file = altFile;
+			}
+#endif
+
 			if (file.Exists)
 			{
 				var contents = File.ReadAllText(file.FullName);
