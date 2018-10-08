@@ -1,6 +1,6 @@
 using System;
 using System.Windows.Forms;
-using Topshelf.Logging;
+using NLog;
 
 namespace Cumtd.Signage.Kiosk.KioskButton.Readers
 {
@@ -11,7 +11,7 @@ namespace Cumtd.Signage.Kiosk.KioskButton.Readers
 	{
 		public abstract string Name { get; }
 
-		private LogWriter Logger { get; }
+		private ILogger Logger { get; }
 
 		private bool _pressed;
 		public bool Pressed
@@ -27,10 +27,15 @@ namespace Cumtd.Signage.Kiosk.KioskButton.Readers
 			}
 		}
 
-		protected KeyboardReader(Keys key, KeyModifiers modifiers, LogWriter logger)
+		private Keys Key { get; }
+		private KeyModifiers Modifiers { get; }
+
+		protected KeyboardReader(Keys key, KeyModifiers modifiers, ILogger logger)
 		{
+			Key = key;
+			Modifiers = modifiers;
 			Logger = logger ?? throw new ArgumentException(nameof(logger));
-			HotKeyManager.RegisterHotKey(key, modifiers);
+			HotKeyManager.RegisterHotKey(Key, Modifiers);
 			HotKeyManager.HotKeyPressed += HotKeyManager_HotKeyPressed;
 		}
 
@@ -38,8 +43,11 @@ namespace Cumtd.Signage.Kiosk.KioskButton.Readers
 
 		private void HotKeyManager_HotKeyPressed(object sender, HotKeyEventArgs e)
 		{
-			Logger.Debug("Key pressed");
-			_pressed = true;
+			if (e.Key == Key && e.Modifiers == Modifiers)
+			{
+				Logger.Debug($"{Name} pressed");
+				_pressed = true;
+			}
 		}
 
 	}

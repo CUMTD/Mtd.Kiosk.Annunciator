@@ -1,5 +1,5 @@
 using Cumtd.Signage.Kiosk.SeaLevel;
-using Topshelf.Logging;
+using NLog;
 
 namespace Cumtd.Signage.Kiosk.KioskButton.Readers
 {
@@ -11,7 +11,7 @@ namespace Cumtd.Signage.Kiosk.KioskButton.Readers
 
 	    public bool Pressed { get; private set; }
 
-	    public SeaLevelButtonReader(LogWriter logger)
+	    public SeaLevelButtonReader(ILogger logger)
 	    {
 		    Reader = new ButtonReader(value => Pressed = value, logger.Debug);
 		    Reader.Start();

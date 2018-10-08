@@ -1,5 +1,5 @@
 using System.Windows.Forms;
-using Topshelf.Logging;
+using NLog;
 
 namespace Cumtd.Signage.Kiosk.KioskButton.Readers
 {
@@ -11,7 +11,7 @@ namespace Cumtd.Signage.Kiosk.KioskButton.Readers
 	{
 		public override string Name => "Alt + Shift + P Keyboard Reader";
 
-		public AltShiftPKeyboardReader(LogWriter logger) : base(Keys.P, KeyModifiers.Alt | KeyModifiers.Shift, logger)
+		public AltShiftPKeyboardReader(ILogger logger) : base(Keys.P, KeyModifiers.Alt | KeyModifiers.Shift, logger)
 		{
 		}
 	}

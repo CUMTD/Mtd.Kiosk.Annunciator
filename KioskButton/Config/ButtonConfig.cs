@@ -5,6 +5,7 @@ namespace Cumtd.Signage.Kiosk.KioskButton.Config
 	internal class ButtonConfig
 	{
 		public string Id { get; set; }
+		public bool HideConsole { get; set; }
 		public Readers Readers { get; set; }
 		public Logging Logging { get; set; }
 
