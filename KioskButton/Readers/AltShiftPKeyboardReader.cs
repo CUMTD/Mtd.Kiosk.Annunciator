@@ -1,4 +1,4 @@
-using System;
+using System.Windows.Forms;
 using Topshelf.Logging;
 
 namespace Cumtd.Signage.Kiosk.KioskButton.Readers
@@ -11,12 +11,8 @@ namespace Cumtd.Signage.Kiosk.KioskButton.Readers
 	{
 		public override string Name => "Alt + Shift + P Keyboard Reader";
 
-
-		public AltShiftPKeyboardReader(LogWriter logger) : base(logger)
+		public AltShiftPKeyboardReader(LogWriter logger) : base(Keys.P, KeyModifiers.Alt | KeyModifiers.Shift, logger)
 		{
 		}
-
-		protected override bool Match(ConsoleKeyInfo press) =>
-			press.Key == ConsoleKey.P && press.Modifiers == (ConsoleModifiers.Alt | ConsoleModifiers.Shift);
 	}
 }

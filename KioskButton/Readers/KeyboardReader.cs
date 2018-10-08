@@ -1,4 +1,5 @@
 using System;
+using System.Windows.Forms;
 using Topshelf.Logging;
 
 namespace Cumtd.Signage.Kiosk.KioskButton.Readers
@@ -12,24 +13,34 @@ namespace Cumtd.Signage.Kiosk.KioskButton.Readers
 
 		private LogWriter Logger { get; }
 
+		private bool _pressed;
 		public bool Pressed
 		{
 			get
 			{
-				Logger.Debug($"Reading {Name}");
-				var state = Console.KeyAvailable && Match(Console.ReadKey());
-				Logger.Debug($"{Name} {(state ? "pressed" : "not pressed")}");
-				return state;
+				var pressed = _pressed;
+				if (pressed)
+				{
+					_pressed = false;
+				}
+				return pressed;
 			}
 		}
 
-		protected KeyboardReader(LogWriter logger)
+		protected KeyboardReader(Keys key, KeyModifiers modifiers, LogWriter logger)
 		{
 			Logger = logger ?? throw new ArgumentException(nameof(logger));
+			HotKeyManager.RegisterHotKey(key, modifiers);
+			HotKeyManager.HotKeyPressed += HotKeyManager_HotKeyPressed;
 		}
 
 		public void Dispose() { }
 
-		protected abstract bool Match(ConsoleKeyInfo press);
+		private void HotKeyManager_HotKeyPressed(object sender, HotKeyEventArgs e)
+		{
+			Logger.Debug("Key pressed");
+			_pressed = true;
+		}
+
 	}
 }
