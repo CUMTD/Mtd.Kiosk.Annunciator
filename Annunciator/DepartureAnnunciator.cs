@@ -9,6 +9,13 @@ namespace Cumtd.Signage.Kiosk.Annunciator
 {
 	public static class DepartureAnnunciator
 	{
+
+#if DEBUG
+		private const int SPEED = 8;
+#else
+		private const int SPEED = -2;
+#endif
+
 		private static readonly Action<string> _defaultLogger = _ => { };
 
 		public static void ReadDepartures(string stopName, IReadOnlyCollection<Departure> departures, Action<string> logger = null)
@@ -49,7 +56,7 @@ namespace Cumtd.Signage.Kiosk.Annunciator
 		{
 			var synth = new SpeechSynthesizer
 			{
-				Rate = -2
+				Rate = SPEED
 			};
 
 			synth.SetOutputToDefaultAudioDevice();

@@ -7,7 +7,7 @@ using Cumtd.Signage.Kiosk.Annunciator;
 using Cumtd.Signage.Kiosk.KioskButton.Readers;
 using Cumtd.Signage.Kiosk.RealTime;
 using Cumtd.Signage.Kiosk.RealTime.Models;
-using Topshelf.Logging;
+using NLog;
 
 namespace Cumtd.Signage.Kiosk.KioskButton
 {
@@ -23,28 +23,29 @@ namespace Cumtd.Signage.Kiosk.KioskButton
 
 		private IButtonReader[] ButtonReaders { get; }
 
+		private ILogger Logger { get; }
 
-		private LogWriter Logger { get; }
-
-		public AnnunciatorService()
+		public AnnunciatorService(ConfigurationManager config)
 		{
-			Config = ConfigurationManager.Config;
-			Logger = HostLogger.Current.Get("kiosk-annunciator");
+			Config = config ?? throw new ArgumentException(nameof(config));
+			Logger = Config.Logger;
+
 			Timer = new Timer(33)
 			{
 				AutoReset = true
 			};
 			Timer.Elapsed += Timer_Elapsed;
 
-
 			var readers = new List<IButtonReader>();
 			if (Config.ButtonConfig.Readers.UseSeaDac)
 			{
+				Logger.Debug($"Adding {nameof(SeaLevelButtonReader)} reader");
 				readers.Add(new SeaLevelButtonReader(Logger));
 			}
 
 			if (Config.ButtonConfig.Readers.UsePanicButton)
 			{
+				Logger.Debug($"Adding {nameof(AltShiftPKeyboardReader)} reader");
 				readers.Add(new AltShiftPKeyboardReader(Logger));
 			}
 
@@ -63,7 +64,7 @@ namespace Cumtd.Signage.Kiosk.KioskButton
 				var pressed = ButtonReaders.Where(br => br.Pressed).ToArray();
 				if (pressed.Length > 0)
 				{
-					Logger.Info($"{pressed.First()} pressed");
+					Logger.Info($"{pressed[0].Name} pressed");
 					Reading = true;
 					Departure[] departures;
 					using (var client = new RealTimeClient())
@@ -76,14 +77,14 @@ namespace Cumtd.Signage.Kiosk.KioskButton
 						}
 						catch (Exception ex)
 						{
-							Logger.Error("Error getting departures", ex);
+							Logger.Error(ex, "Error getting departures");
 							DepartureAnnunciator.ReadError(Logger.Info);
 							return;
 						}
 
 					}
 
-					Logger.DebugFormat("Fetched {0} departures", departures.Length);
+					Logger.Debug($"Fetched {departures.Length} departures");
 					DepartureAnnunciator.ReadDepartures(Config.Name, departures, Logger.Info);
 					Logger.Debug("Done reading");
 					Reading = false;
