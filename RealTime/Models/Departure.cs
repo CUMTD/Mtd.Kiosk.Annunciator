@@ -1,4 +1,4 @@
-using System.Text.RegularExpressions;
+using System;
 
 namespace Cumtd.Signage.Kiosk.RealTime.Models
 {
@@ -6,7 +6,7 @@ namespace Cumtd.Signage.Kiosk.RealTime.Models
 	{
 		public string Name { get; set; }
 		public string Time { get; set; }
-		public bool Due => string.Equals(Time, "DUE");
+		public bool Due => string.Equals(Time, "DUE", StringComparison.CurrentCultureIgnoreCase);
 		public bool Realtime => Time.Contains("min") || Due;
 		public string JoinWord
 		{
@@ -24,12 +24,10 @@ namespace Cumtd.Signage.Kiosk.RealTime.Models
 			}
 		}
 
-		private static readonly Regex DirectionRegex = new Regex("([0-9]+)([a-zA-Z])");
-
-		internal Departure(DataItem name, DataItem time)
+		internal Departure(string name, string time)
 		{
-			Name = DirectionRegex.Replace(name.Value, "$1 $2");
-			Time = time.Value.Replace("min", "minute");
+			Name = name;
+			Time = time.Replace("min", "minute");
 		}
 	}
 }

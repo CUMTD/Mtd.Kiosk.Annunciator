@@ -37,7 +37,7 @@ namespace Cumtd.Signage.Kiosk.RealTime
 		private async Task<string> GetJson(string id)
 		{
 			var result = await HttpClient
-				.GetAsync($"https://kiosk.mtd.org/umbraco/api/realtime/IPDisplayDepartures/?id={id}&log=false")
+				.GetAsync($"https://kiosk.mtd.org/umbraco/api/realtime/getdepartures?id={id}&log=false")
 				.ConfigureAwait(false);
 
 			return await result
@@ -46,20 +46,23 @@ namespace Cumtd.Signage.Kiosk.RealTime
 				.ConfigureAwait(false);
 		}
 
-		private static IEnumerable<DataItem> ConvertJson(string json) =>
-			JsonConvert.DeserializeObject<DataItem[]>(json);
+		private static IEnumerable<JsonDeparture> ConvertJson(string json) =>
+			JsonConvert.DeserializeObject<IEnumerable<JsonDeparture>>(json);
 
-		private static Departure[] ConvertToDepartures(IEnumerable<DataItem> items)
+		private static Departure[] ConvertToDepartures(IEnumerable<JsonDeparture> items)
 		{
-			var itemsToConvert = (items ?? Enumerable.Empty<DataItem>())
-				.Where(di => di.Value != "NO_DATA")
+			var itemsToConvert = (items ?? Enumerable.Empty<JsonDeparture>())
 				.ToArray();
-
+			
 			var departures = new List<Departure>();
-			for (var i = 0; i < itemsToConvert.Length; i += 2)
+			// ReSharper disable once LoopCanBeConvertedToQuery
+			foreach (var item in itemsToConvert)
 			{
-				departures.Add(new Departure(itemsToConvert[i], itemsToConvert[i + 1]));
+				var baseName = $"{item.Number} {item.Direction} {item.Name}";
+				var name = item.HasModifier ? $"{baseName} to {item.Modifier}" : baseName;
+				departures.Add(new Departure(name, item.Display));
 			}
+
 			return departures.ToArray();
 		}
 
