@@ -24,20 +24,28 @@ steps:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
 
-- task: NuGetCommand@2
-  inputs:
-    command: pack
-    packagesToPack: '**/Cumtd.Signage.Kiosk.KioskButton.csproj'
-    versioningScheme: byPrereleaseNumber
-    configuration: '$(buildConfiguration)'
-
-- task: NuGetPublisher@0
-  inputs:
-    searchPattern: '**/*.nupkg;-:**/packages/**/*.nupkg;-:**/*.symbols.nupkg' 
-    nuGetFeedType: 'internal'
-    feedName: 'KioskButtonFeed'
-
 #- task: VSTest@2
 # inputs:
 #   platform: '$(buildPlatform)'
 #   configuration: '$(buildConfiguration)'
+
+
+- task: NuGetCommand@2
+  inputs:
+    command: 'pack'
+    packagesToPack: 'Cumtd.Signage.Kiosk.KioskButton.csproj'
+    configuration: '$(BuildConfiguration)'
+    packDestination: '$(Build.ArtifactStagingDirectory)'
+    versioningScheme: 'byBuildNumber'
+    packTimezone: 'local'
+    includeSymbols: true
+
+- task: NuGetCommand@2
+  inputs:
+    command: 'push' 
+    nuGetFeedType: 'internal'
+    publishVstsFeed: 'KioskButtonFeed'
+    configuration: '$(BuildConfiguration)'
+    versioningScheme: byBuildNumber
+    packTimezone: 'local'
+    includeSymbols: true
