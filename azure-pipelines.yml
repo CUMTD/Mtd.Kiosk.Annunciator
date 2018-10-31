@@ -38,6 +38,7 @@ steps:
     command: 'pack'
     packagesToPack: '**/Cumtd.Signage.Kiosk.KioskButton.csproj'
     configuration: '$(BuildConfiguration)'
+    packDirectory: '$(Build.ArtifactStagingDirectory)'
     packDestination: '$(Build.ArtifactStagingDirectory)'
     versioningScheme: byPrereleaseNumber
     majorVersion: '$(Major)'
