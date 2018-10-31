@@ -5,9 +5,6 @@
 
 pool:
   vmImage: 'VS2017-Win2016'
-  Major: '1'
-  Minor: '0'
-  Patch: '0'
 
 variables:
   solution: '**/*.sln'
@@ -32,9 +29,6 @@ steps:
     command: pack
     packagesToPack: '**/Cumtd.Signage.Kiosk.KioskButton.csproj'
     versioningScheme: byPrereleaseNumber
-    majorVersion: '$(Major)'
-    minorVersion: '$(Minor)'
-    patchVersion: '$(Patch)'
     configuration: '$(buildConfiguration)'
 
 - task: NuGetPublisher@0
