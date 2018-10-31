@@ -30,12 +30,12 @@ steps:
 - task: NuGetCommand@2
   inputs:
     command: pack
-	packagesToPack: '**/Cumtd.Signage.Kiosk.KioskButton.csproj'
-	versioningScheme: byPrereleaseNumber
+	  packagesToPack: '**/Cumtd.Signage.Kiosk.KioskButton.csproj'
+	  versioningScheme: byPrereleaseNumber
     majorVersion: '$(Major)'
     minorVersion: '$(Minor)'
     patchVersion: '$(Patch)'
-	configuration: '$(buildConfiguration)'
+	  configuration: '$(buildConfiguration)'
 
 - task: NuGetPublisher@0
   inputs:
