@@ -1,6 +1,8 @@
 # Kiosk Annunciator Button
 Read departures when the annunciator button is pressed on a kiosk.
 
+[![Build Status](https://dev.azure.com/cumtd/KioskButton/_apis/build/status/CUMTD.KioskAnnunciatorButton)](https://dev.azure.com/cumtd/KioskButton/_build/latest?definitionId=6)
+
 ## Installation
 1. Build the `Cumtd.Signage.Kiosk.KioskButton` project in release mode.
 2. Copy the output of `/KioskButton/bin/x86/Release/` to a folder at the root directory of the target PC.
