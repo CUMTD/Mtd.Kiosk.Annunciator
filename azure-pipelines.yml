@@ -43,9 +43,7 @@ steps:
     nuGetFeedType: 'internal'
     feedName: 'KioskButtonFeed'
 
-
-
 #- task: VSTest@2
-#  inputs:
-#    platform: '$(buildPlatform)'
-#    configuration: '$(buildConfiguration)'
+# inputs:
+#   platform: '$(buildPlatform)'
+#   configuration: '$(buildConfiguration)'
