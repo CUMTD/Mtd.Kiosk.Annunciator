@@ -36,7 +36,7 @@ steps:
 - task: NuGetCommand@2
   inputs:
     command: 'pack'
-    packagesToPack: 'Cumtd.Signage.Kiosk.KioskButton.csproj'
+    packagesToPack: '**/Cumtd.Signage.Kiosk.KioskButton.csproj'
     configuration: '$(BuildConfiguration)'
     packDestination: '$(Build.ArtifactStagingDirectory)'
     versioningScheme: byPrereleaseNumber
@@ -50,6 +50,7 @@ steps:
   inputs:
     command: 'push' 
     nuGetFeedType: 'internal'
+    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
     publishVstsFeed: 'KioskButtonFeed'
     configuration: '$(BuildConfiguration)'
     versioningScheme: byBuildNumber
