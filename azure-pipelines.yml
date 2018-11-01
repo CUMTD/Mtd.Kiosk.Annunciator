@@ -32,34 +32,34 @@ steps:
 #   platform: '$(buildPlatform)'
 #   configuration: '$(buildConfiguration)'
 
-- task: CopyFiles@2
-  displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
+- task: PublishSymbols@2
+  displayName: 'Publish symbols path'
   inputs:
-    SourceFolder: '$(system.defaultworkingdirectory)'
+    SearchPattern: '**\bin\**\*.pdb'
+    PublishSymbols: false
+  continueOnError: true
+
+- task: CopyFiles@2
+  displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
+  inputs:
+    SourceFolder: '$(System.DefaultWorkingDirectory)'
     Contents: '**\bin\$(BuildConfiguration)\**'
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
 
 - task: NuGetCommand@2
+  displayName: 'NuGet pack'
   inputs:
-    command: 'pack'
-    packagesToPack: '**/Cumtd.Signage.Kiosk.KioskButton.csproj'
-    configuration: '$(BuildConfiguration)'
-    packDirectory: '$(Build.ArtifactStagingDirectory)'
-    packDestination: '$(Build.ArtifactStagingDirectory)'
+    command: pack
+    packTimezone: local
     versioningScheme: byPrereleaseNumber
     majorVersion: '$(Major)'
     minorVersion: '$(Minor)'
     patchVersion: '$(Patch)'
     packTimezone: 'local'
-    includeSymbols: true
 
 - task: NuGetCommand@2
+  displayName: 'NuGet push'
   inputs:
-    command: 'push' 
-    nuGetFeedType: 'internal'
-    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
-    publishVstsFeed: 'KioskButtonFeed'
-    configuration: '$(BuildConfiguration)'
-    versioningScheme: byBuildNumber
-    packTimezone: 'local'
-    includeSymbols: true
+    command: push
+    publishVstsFeed: '82665c26-f620-4de9-a151-868f07ba952b'
+
