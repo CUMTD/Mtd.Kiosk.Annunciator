@@ -42,5 +42,5 @@ steps:
   inputs:
     command: push
     nuGetFeedType: 'internal'
-    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/octopacked/Cumtd.Signage.Kiosk.KioskButton.1.0.0.0.nupkg' # Required when command == Push
+    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/octopacked/*.nupkg' # Required when command == Push
     publishVstsFeed: '82665c26-f620-4de9-a151-868f07ba952b'
