@@ -35,12 +35,10 @@ steps:
     Contents: '**\bin\$(BuildConfiguration)\**'
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
 
-
-
 - task: NuGetCommand@2
   displayName: 'NuGet push'
   inputs:
     command: push
-    nuGetFeedType: 'internal'
-    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/octopacked/*.nupkg' # Required when command == Push
+    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg' # Required when command == Push
     publishVstsFeed: '82665c26-f620-4de9-a151-868f07ba952b'
+
