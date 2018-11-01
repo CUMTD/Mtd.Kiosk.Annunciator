@@ -26,18 +26,7 @@ steps:
     solution: '$(solution)'
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
-
-#- task: VSTest@2
-# inputs:
-#   platform: '$(buildPlatform)'
-#   configuration: '$(buildConfiguration)'
-
-- task: PublishSymbols@2
-  displayName: 'Publish symbols path'
-  inputs:
-    SearchPattern: '**\bin\**\*.pdb'
-    PublishSymbols: false
-  continueOnError: true
+    msbuildArgs: '/p:RunOctoPack=true'
 
 - task: CopyFiles@2
   displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
@@ -46,19 +35,12 @@ steps:
     Contents: '**\bin\$(BuildConfiguration)\**'
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
 
-- task: NuGetCommand@2
-  displayName: 'NuGet pack'
-  inputs:
-    command: pack
-    packTimezone: local
-    versioningScheme: byPrereleaseNumber
-    majorVersion: '$(Major)'
-    minorVersion: '$(Minor)'
-    patchVersion: '$(Patch)'
+
 
 - task: NuGetCommand@2
   displayName: 'NuGet push'
   inputs:
     command: push
+    nuGetFeedType: 'internal'
+    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg' # Required when command == Push
     publishVstsFeed: '82665c26-f620-4de9-a151-868f07ba952b'
-
