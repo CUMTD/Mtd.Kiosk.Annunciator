@@ -32,6 +32,12 @@ steps:
 #   platform: '$(buildPlatform)'
 #   configuration: '$(buildConfiguration)'
 
+- task: CopyFiles@2
+  displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
+  inputs:
+    SourceFolder: '$(system.defaultworkingdirectory)'
+    Contents: '**\bin\$(BuildConfiguration)\**'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
 
 - task: NuGetCommand@2
   inputs:
