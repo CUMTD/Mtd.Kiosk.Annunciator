@@ -32,7 +32,7 @@ steps:
   displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
   inputs:
     SourceFolder: '$(System.DefaultWorkingDirectory)'
-    Contents: '**\bin\$(BuildConfiguration)\**'
+    Contents: '**\octopacked\**'
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
 
 - task: NuGetCommand@2
