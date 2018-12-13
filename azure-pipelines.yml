@@ -10,9 +10,9 @@ variables:
   solution: '**/*.sln'
   buildPlatform: 'x86'
   buildConfiguration: 'Release'
-  Major: '1'
-  Minor: '0'
-  Patch: '1'
+  major: '3'
+  minor: '0'
+  patch: $[counter('versioncounter', 0)]
 
 steps:
 - task: NuGetToolInstaller@0
@@ -26,7 +26,7 @@ steps:
     solution: '$(solution)'
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
-    msbuildArgs: '/p:RunOctoPack=true'
+    msbuildArgs: '/p:RunOctoPack=true /p:OctoPackPackageVersion=$(major).$(minor).$(patch)'
 
 - task: CopyFiles@2
   displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
