@@ -6,7 +6,7 @@
 		"usePanicButton": true
 	},
 	"logging": {
-		"console": "info",
+		"console": "debug",
 		"event": "warn"
 	}
 }
