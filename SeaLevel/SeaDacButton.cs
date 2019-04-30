@@ -57,10 +57,10 @@ namespace Cumtd.Signage.Kiosk.SeaLevel
 			OpenRead();
 			if (SeaMax.SM_NotifyInputState(0) != 2)
 			{
-				// update `bytes` when state chagnes
-				// update every 16 miliseconds (60 hz)
+				// update `bytes` when state changes
+				// update every 16 milliseconds (60 hz)
 				// don't block so that it can be canceled
-				SeaMax.SM_NotifyOnInputChange(0, 1, bytes, pollingRate, 0);
+				SeaMax.SM_NotifyOnInputChange(0, 4, bytes, pollingRate, 0);
 			}
 		}
 
