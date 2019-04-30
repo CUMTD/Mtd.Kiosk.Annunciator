@@ -1,9 +1,8 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
+// ReSharper disable UnusedMember.Global
 
 // https://stackoverflow.com/questions/3654787/global-hotkey-in-console-application
 namespace Cumtd.Signage.Kiosk.KioskButton
@@ -20,6 +19,7 @@ namespace Cumtd.Signage.Kiosk.KioskButton
 			return id;
 		}
 
+		// ReSharper disable once UnusedMember.Global
 		public static void UnregisterHotKey(int id) =>
 			_wnd.Invoke(new UnRegisterHotKeyDelegate(UnRegisterHotKeyInternal), _hwnd, id);
 
@@ -86,7 +86,7 @@ namespace Cumtd.Signage.Kiosk.KioskButton
 		[DllImport("user32", SetLastError = true)]
 		private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
 
-		private static int _id = 0;
+		private static int _id;
 	}
 
 
@@ -95,6 +95,8 @@ namespace Cumtd.Signage.Kiosk.KioskButton
 		public readonly Keys Key;
 		public readonly KeyModifiers Modifiers;
 
+		/// <inheritdoc />
+		// ReSharper disable once UnusedMember.Global
 		public HotKeyEventArgs(Keys key, KeyModifiers modifiers)
 		{
 			Key = key;

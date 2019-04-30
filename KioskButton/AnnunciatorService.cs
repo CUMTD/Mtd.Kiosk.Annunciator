@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
 using System.Timers;
 using Cumtd.Signage.Kiosk.Annunciator;
 using Cumtd.Signage.Kiosk.KioskButton.Readers;
@@ -20,6 +22,7 @@ namespace Cumtd.Signage.Kiosk.KioskButton
 		private ConfigurationManager Config { get; }
 
 		private Timer Timer { get; }
+		private Timer HeartBeatTimer { get; }
 
 		private IButtonReader[] ButtonReaders { get; }
 
@@ -55,6 +58,13 @@ namespace Cumtd.Signage.Kiosk.KioskButton
 			}
 
 			ButtonReaders = readers.ToArray();
+
+			HeartBeatTimer = new Timer(TimeSpan.FromMinutes(1).TotalMilliseconds)
+			{
+				AutoReset = true
+			};
+			HeartBeatTimer.Elapsed += HeartBeatTimer_Elapsed;
+
 		}
 
 		private void Timer_Elapsed(object sender, ElapsedEventArgs e)
@@ -94,6 +104,37 @@ namespace Cumtd.Signage.Kiosk.KioskButton
 			}
 		}
 
+		private void HeartBeatTimer_Elapsed(object sender, ElapsedEventArgs e)
+		{
+			try
+			{
+				Logger.Trace("Begin Sending Heartbeat");
+				var heartBeatTask = SendHeartBeat();
+				heartBeatTask.Wait();
+				Logger.Trace("Done Sending Heartbeat");
+			}
+			catch (Exception ex)
+			{
+				Logger.Warn(ex, "Failed to send heartbeat.");
+			}
+		}
+
+		private async Task SendHeartBeat()
+		{
+			HttpResponseMessage response;
+			using (var client = new HttpClient { Timeout = TimeSpan.FromSeconds(15) })
+			{
+				response = await client
+					.GetAsync($"https://kiosk.mtd.org/umbraco/api/health/buttonheartbeat?id={Config.ButtonConfig.Id}")
+					.ConfigureAwait(false);
+			}
+
+			if (response.StatusCode != System.Net.HttpStatusCode.OK)
+			{
+				throw new Exception($"Failed with status code: {response.StatusCode}");
+			}
+		}
+
 		public void Start()
 		{
 			if (Disposed)
@@ -104,12 +145,15 @@ namespace Cumtd.Signage.Kiosk.KioskButton
 
 			Logger.Info("Starting Service");
 			Timer.Start();
+			HeartBeatTimer.Start();
 		}
 
+		// ReSharper disable once UnusedMember.Global
 		public void Stop()
 		{
 			Logger.Info("Stopping Service");
 			Timer.Stop();
+			HeartBeatTimer.Stop();
 		}
 
 		public void Dispose()
@@ -122,6 +166,7 @@ namespace Cumtd.Signage.Kiosk.KioskButton
 				reader.Dispose();
 			}
 			Timer.Stop();
+			HeartBeatTimer.Stop();
 		}
 	}
 }

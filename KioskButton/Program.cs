@@ -47,10 +47,10 @@ namespace Cumtd.Signage.Kiosk.KioskButton
 			HotKeyManager.RegisterHotKey(TOGGLE_CONSOLE_KEY, TOGGLE_CONSOLE_MODIFIERS);
 			HotKeyManager.HotKeyPressed += HotKeyManager_HotKeyPressed;
 
-			// show or hide the console window based on the applicaiton config
+			// show or hide the console window based on the application config
 			ToggleConsoleWindow(!Config.ButtonConfig.HideConsole);
 
-			// Start the annunciator servce
+			// Start the annunciation service
 			// This will actually do all the work
 			Service = new AnnunciatorService(Config);
 			Service.Start();
@@ -78,6 +78,7 @@ namespace Cumtd.Signage.Kiosk.KioskButton
 
 		private static void HotKeyManager_HotKeyPressed(object sender, HotKeyEventArgs e)
 		{
+			// ReSharper disable once SwitchStatementMissingSomeCases
 			switch (e.Key)
 			{
 				// quit
@@ -91,8 +92,6 @@ namespace Cumtd.Signage.Kiosk.KioskButton
 					break;
 			}
 		}
-
-
 
 	}
 }

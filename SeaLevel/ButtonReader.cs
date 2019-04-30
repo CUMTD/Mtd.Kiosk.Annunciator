@@ -78,7 +78,7 @@ namespace Cumtd.Signage.Kiosk.SeaLevel
 					// 1 == true
 					var current = bytes[0] >= 1;
 
-					// last state is diferent from curent
+					// last state is different from current
 					if (!lastState.HasValue || current != lastState.Value)
 					{
 						bgWorker.ReportProgress(current ? 1 : 0);
