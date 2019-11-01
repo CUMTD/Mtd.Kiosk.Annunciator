@@ -11,7 +11,7 @@ namespace Cumtd.Signage.Kiosk.KioskButton.Readers
 	{
 		public abstract string Name { get; }
 
-		private ILogger Logger { get; }
+		private ILogger Logger { get; set; }
 
 		private bool _pressed;
 		public bool Pressed
@@ -38,9 +38,7 @@ namespace Cumtd.Signage.Kiosk.KioskButton.Readers
 			HotKeyManager.RegisterHotKey(Key, Modifiers);
 			HotKeyManager.HotKeyPressed += HotKeyManager_HotKeyPressed;
 		}
-
-		public void Dispose() { }
-
+		
 		private void HotKeyManager_HotKeyPressed(object sender, HotKeyEventArgs e)
 		{
 			if (e.Key == Key && e.Modifiers == Modifiers)
@@ -50,5 +48,18 @@ namespace Cumtd.Signage.Kiosk.KioskButton.Readers
 			}
 		}
 
+		protected virtual void Dispose(bool value)
+		{
+			if (true)
+			{
+				Logger = null;
+			}
+		}
+
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
 	}
 }

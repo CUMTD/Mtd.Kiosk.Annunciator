@@ -29,8 +29,12 @@ namespace Cumtd.Signage.Kiosk.KioskButton
 		{
 			var settings = ReadSettings<ButtonConfig>();
 			ButtonConfig = settings;
-			Logger = NLogConfiguration.BuildLogFactory(ButtonConfig.Logging).GetLogger("kiosk-annunciator");
-			
+			using (var logFactory = NLogConfiguration.BuildLogFactory(ButtonConfig.Logging))
+			{
+				Logger = logFactory.GetLogger("kiosk-annunciator");
+			}
+
+
 		}
 
 		private async Task AsyncInit() =>
@@ -77,6 +81,5 @@ namespace Cumtd.Signage.Kiosk.KioskButton
 			var settings = JsonConvert.DeserializeObject<SignSettings>(json);
 			return settings.DisplayName;
 		}
-
 	}
 }

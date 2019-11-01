@@ -22,22 +22,23 @@ namespace Cumtd.Signage.Kiosk.Annunciator
 		{
 			logger = logger ?? _defaultLogger;
 
-			var synth = GetSynth();
-
-			// no departures
-			if (departures == null || departures.Count == 0)
+			using (var synth = GetSynth())
 			{
-				ReadLine("There are no upcoming departures at this time.", logger);
-			}
-			else
-			{
-				ReadLine($"Departures for {stopName} as of {DateTime.Now:h:mm tt}", logger);
-				// read each line
-				foreach (var departure in departures)
+				// no departures
+				if (departures == null || departures.Count == 0)
 				{
-					var read = $"{departure.Name} {departure.JoinWord} {departure.Time}";
-					logger(read);
-					synth.Speak(read);
+					ReadLine("There are no upcoming departures at this time.", logger);
+				}
+				else
+				{
+					ReadLine($"Departures for {stopName} as of {DateTime.Now:h:mm tt}", logger);
+					// read each line
+					foreach (var departure in departures)
+					{
+						var read = $"{departure.Name} {departure.JoinWord} {departure.Time}";
+						logger(read);
+						synth.Speak(read);
+					}
 				}
 			}
 		}
@@ -47,9 +48,11 @@ namespace Cumtd.Signage.Kiosk.Annunciator
 
 		private static void ReadLine(string line, Action<string> logger)
 		{
-			var synth = GetSynth();
 			logger(line);
-			synth.Speak(line);
+			using (var synth = GetSynth())
+			{
+				synth.Speak(line);
+			}
 		}
 
 		private static SpeechSynthesizer GetSynth()

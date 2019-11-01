@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 
 namespace Cumtd.Signage.Kiosk.RealTime
 {
-	public class RealTimeClient : IDisposable
+	public sealed class RealTimeClient : IDisposable
 	{
 
 		public bool Disposed { get; private set; }
@@ -65,7 +65,7 @@ namespace Cumtd.Signage.Kiosk.RealTime
 
 			return departures.ToArray();
 		}
-
+		
 		public void Dispose()
 		{
 			Disposed = true;
