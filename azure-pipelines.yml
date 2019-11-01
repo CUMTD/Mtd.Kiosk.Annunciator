@@ -11,7 +11,7 @@ variables:
   buildPlatform: 'x86'
   buildConfiguration: 'Release'
   major: '3'
-  minor: '2'
+  minor: '3'
   patch: $[counter('versioncounter', 0)]
 
 steps:
