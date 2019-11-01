@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
 	<TargetFramework>net48</TargetFramework>
@@ -6,6 +6,10 @@
 	<OutputType>Exe</OutputType>
 	<StartupObject>Cumtd.Signage.Kiosk.KioskButton.Program</StartupObject>
   </PropertyGroup>
+
+	<PropertyGroup>
+		<LangVersion>7.3</LangVersion>
+	</PropertyGroup>
 
   <ItemGroup>
 	<Reference Include="System.Windows.Forms" />
@@ -22,15 +26,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
-    <PackageReference Include="NLog" Version="4.6.7" />
-    <PackageReference Include="System.Net.Http" Version="4.3.4" />
+	<PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+	<PackageReference Include="NLog" Version="4.6.7" />
+	<PackageReference Include="System.Net.Http" Version="4.3.4" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Annunciator\Cumtd.Signage.Kiosk.Annunciator.csproj" />
-    <ProjectReference Include="..\RealTime\Cumtd.Signage.Kiosk.RealTime.csproj" />
-    <ProjectReference Include="..\SeaLevel\Cumtd.Signage.Kiosk.SeaLevel.csproj" />
+	<ProjectReference Include="..\Annunciator\Cumtd.Signage.Kiosk.Annunciator.csproj" />
+	<ProjectReference Include="..\RealTime\Cumtd.Signage.Kiosk.RealTime.csproj" />
+	<ProjectReference Include="..\SeaLevel\Cumtd.Signage.Kiosk.SeaLevel.csproj" />
   </ItemGroup>
 
 </Project>
