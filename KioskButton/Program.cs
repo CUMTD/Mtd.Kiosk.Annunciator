@@ -1,7 +1,10 @@
 using System;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
+using Newtonsoft.Json;
+using NLog;
 
 namespace Cumtd.Signage.Kiosk.KioskButton
 {
@@ -59,6 +62,14 @@ namespace Cumtd.Signage.Kiosk.KioskButton
 			var result = string.Empty;
 			while (!string.Equals(result, "quit", StringComparison.CurrentCultureIgnoreCase))
 			{
+				Console.Clear();
+
+				if (Config.ButtonConfig.Logging.ConsoleLogLevel != LogLevel.Info &&
+				    Config.ButtonConfig.Logging.ConsoleLogLevel != LogLevel.Off)
+				{
+					WriteConsoleInfoInfo();
+				}
+
 				Console.WriteLine("Type 'quit' to exit");
 				result = Console.ReadLine();
 			}
@@ -91,6 +102,16 @@ namespace Cumtd.Signage.Kiosk.KioskButton
 					ToggleConsoleWindow();
 					break;
 			}
+		}
+
+		private static void WriteConsoleInfoInfo()
+		{
+			var execAssembly = Assembly.GetCallingAssembly();
+			var name = execAssembly.GetName();
+			Console.WriteLine($"VERSION: {name.Name} {name.Version.Major:0}.{name.Version.Minor:0} for .Net ({execAssembly.ImageRuntimeVersion}\n\n");
+
+			Console.WriteLine("CONFIG:");
+				Console.WriteLine($"{JsonConvert.SerializeObject(Config.ButtonConfig, Formatting.Indented)}\n\n");
 		}
 
 	}
