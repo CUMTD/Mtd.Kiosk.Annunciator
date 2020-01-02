@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29424.173
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cumtd.Signage.Kiosk.KioskButton", "KioskButton\Cumtd.Signage.Kiosk.KioskButton.csproj", "{C19CF96E-BA90-4963-9929-48DE58C5D66D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cumtd.Signage.Kiosk.KioskButton", "KioskButton\Cumtd.Signage.Kiosk.KioskButton.csproj", "{C19CF96E-BA90-4963-9929-48DE58C5D66D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cumtd.Signage.Kiosk.SeaLevel", "SeaLevel\Cumtd.Signage.Kiosk.SeaLevel.csproj", "{B8C149A3-F24F-4B13-9B51-B38196BE9D64}"
 EndProject
@@ -13,12 +13,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.gitattributes = .gitattributes
 		.gitignore = .gitignore
 		azure-pipelines.yml = azure-pipelines.yml
+		LICENSE = LICENSE
 		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cumtd.Signage.Kiosk.RealTime", "RealTime\Cumtd.Signage.Kiosk.RealTime.csproj", "{245033C1-D853-481D-9303-7EEAB7DCDF14}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cumtd.Signage.Kiosk.Annunciator", "Annunciator\Cumtd.Signage.Kiosk.Annunciator.csproj", "{4F855EA4-7F2F-460B-B964-C8A09AF0A449}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cumtd.Signage.Kiosk.Annunciator", "Annunciator\Cumtd.Signage.Kiosk.Annunciator.csproj", "{4F855EA4-7F2F-460B-B964-C8A09AF0A449}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
