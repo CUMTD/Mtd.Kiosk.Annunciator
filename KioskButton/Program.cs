@@ -64,8 +64,7 @@ namespace Cumtd.Signage.Kiosk.KioskButton
 			{
 				Console.Clear();
 
-				if (Config.ButtonConfig.Logging.ConsoleLogLevel != LogLevel.Info &&
-				    Config.ButtonConfig.Logging.ConsoleLogLevel != LogLevel.Off)
+				if (Config.ButtonConfig.Logging.ConsoleLogLevel != LogLevel.Off)
 				{
 					WriteConsoleInfoInfo();
 				}
