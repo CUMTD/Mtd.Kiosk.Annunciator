@@ -1,15 +1,17 @@
 <?xml version="1.0"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
-	<metadata>
-		<id>Cumtd.Signage.Kiosk.KioskButton</id>
-		<title>Kiosk Annunciator Push Button Service</title>
-		<version>3.3.0</version>
-		<authors>Ryan Blackman</authors>
-		<owners>Champaign-Urbana Mass Transit District</owners>
-		<projectUrl>https://github.com/CUMTD/CUMTD</projectUrl>
-		<description>Read departures estimates when a push button is pressed on a kiosk.</description>
-	</metadata>
-	<files>
-		<file src="Config\**\*.*" target="Config" />
-	</files>
+  <metadata>
+	<id>Cumtd.Signage.Kiosk.KioskButton</id>
+	<title>Kiosk Annunciator Push Button Service</title>
+	<version>3.3.0</version>
+	<authors>Ryan Blackman</authors>
+	<owners>Champaign-Urbana Mass Transit District</owners>
+	<projectUrl>https://github.com/CUMTD/CUMTD</projectUrl>
+	<description>Read departures estimates when a push button is pressed on a kiosk.</description>
+	<projectUrl>https://github.com/CUMTD/KioskAnnunciatorButton</projectUrl>
+	<licenseUrl>https://github.com/CUMTD/KioskAnnunciatorButton/blob/master/LICENSE</licenseUrl>
+  </metadata>
+  <files>
+	<file src="Config\**\*.*" target="Config" />
+  </files>
 </package>

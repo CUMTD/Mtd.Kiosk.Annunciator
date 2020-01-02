@@ -24,7 +24,7 @@ steps:
     solution: '$(solution)'
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
-    msbuildArgs: '/p:RunOctoPack=true /p:OctoPackPackageVersion=$(major).$(minor).$(patch)'
+    msbuildArgs: '/p:RunOctoPack=true /p:OctoPackEnforceAddingFiles=true /p:OctoPackPackageVersion=$(major).$(minor).$(patch)'
 
 - task: CopyFiles@2
   displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
