@@ -15,7 +15,7 @@ namespace Cumtd.Signage.Kiosk.KioskButton
 		{
 			_windowReadyEvent.WaitOne();
 			var id = Interlocked.Increment(ref _id);
-			_wnd.Invoke(new RegisterHotKeyDelegate(RegisterHotKeyInternal), _hwnd, id, (uint) modifiers, (uint)key);
+			_wnd.Invoke(new RegisterHotKeyDelegate(RegisterHotKeyInternal), _hwnd, id, (uint)modifiers, (uint)key);
 			return id;
 		}
 

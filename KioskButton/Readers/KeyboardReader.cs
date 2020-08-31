@@ -38,7 +38,7 @@ namespace Cumtd.Signage.Kiosk.KioskButton.Readers
 			HotKeyManager.RegisterHotKey(Key, Modifiers);
 			HotKeyManager.HotKeyPressed += HotKeyManager_HotKeyPressed;
 		}
-		
+
 		private void HotKeyManager_HotKeyPressed(object sender, HotKeyEventArgs e)
 		{
 			if (e.Key == Key && e.Modifiers == Modifiers)

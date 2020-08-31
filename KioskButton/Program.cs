@@ -1,8 +1,8 @@
 using System;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Runtime.InteropServices;
 using Newtonsoft.Json;
 using NLog;
 
@@ -107,10 +107,12 @@ namespace Cumtd.Signage.Kiosk.KioskButton
 		{
 			var execAssembly = Assembly.GetCallingAssembly();
 			var name = execAssembly.GetName();
-			Console.WriteLine($"VERSION: {name.Name} {name.Version.Major:0}.{name.Version.Minor:0} for .Net ({execAssembly.ImageRuntimeVersion}\n\n");
+			Console.WriteLine($"VERSION: {name.Name} {name.Version.Major:0}.{name.Version.Minor:0}.{name.Version.Revision:0} for .Net ({execAssembly.ImageRuntimeVersion})");
+
+			Console.WriteLine($"APP BASE DIR: {AppDomain.CurrentDomain.BaseDirectory}\n\n");
 
 			Console.WriteLine("CONFIG:");
-				Console.WriteLine($"{JsonConvert.SerializeObject(Config.ButtonConfig, Formatting.Indented)}\n\n");
+			Console.WriteLine($"{JsonConvert.SerializeObject(Config.ButtonConfig, Formatting.Indented)}\n\n");
 		}
 
 	}

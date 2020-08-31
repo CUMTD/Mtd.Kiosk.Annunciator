@@ -53,7 +53,7 @@ namespace Cumtd.Signage.Kiosk.RealTime
 		{
 			var itemsToConvert = (items ?? Enumerable.Empty<JsonDeparture>())
 				.ToArray();
-			
+
 			var departures = new List<Departure>();
 			// ReSharper disable once LoopCanBeConvertedToQuery
 			foreach (var item in itemsToConvert)
@@ -65,7 +65,7 @@ namespace Cumtd.Signage.Kiosk.RealTime
 
 			return departures.ToArray();
 		}
-		
+
 		public void Dispose()
 		{
 			Disposed = true;

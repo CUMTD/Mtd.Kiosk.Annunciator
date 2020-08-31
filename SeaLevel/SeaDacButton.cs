@@ -7,7 +7,7 @@ namespace Cumtd.Signage.Kiosk.SeaLevel
 	{
 		private Action<string> Logger { get; }
 		private SeaMAX SeaMax { get; set; }
-		
+
 		public SeaDacButton(Action<string> logger)
 		{
 			Logger = logger ?? Console.WriteLine;

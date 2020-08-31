@@ -31,6 +31,7 @@ namespace Cumtd.Signage.Kiosk.KioskButton.Config
 			{
 				case "trace": return LogLevel.Trace;
 				case "debug": return LogLevel.Debug;
+				case "info": return LogLevel.Info;
 				case "warn": return LogLevel.Warn;
 				case "error": return LogLevel.Error;
 				case "fatal": return LogLevel.Fatal;

@@ -10,7 +10,7 @@ namespace Cumtd.Signage.Kiosk.KioskButton.Readers
 	public sealed class AltShiftPKeyboardReader : KeyboardReader
 	{
 		public override string Name => "Alt + Shift + P Keyboard Reader";
-		
+
 		public AltShiftPKeyboardReader(ILogger logger) : base(Keys.P, KeyModifiers.Alt | KeyModifiers.Shift, logger)
 		{
 		}
