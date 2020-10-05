@@ -1,8 +1,5 @@
 using System;
 using System.IO;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Threading.Tasks;
 using Cumtd.Signage.Kiosk.KioskButton.Config;
 using Newtonsoft.Json;
 using NLog;
@@ -11,34 +8,19 @@ namespace Cumtd.Signage.Kiosk.KioskButton
 {
 	internal sealed class ConfigurationManager
 	{
-		private static readonly AsyncLazy<ConfigurationManager> _config =
-			new AsyncLazy<ConfigurationManager>(async () =>
-			{
-				var configManager = new ConfigurationManager();
-				await configManager.AsyncInit().ConfigureAwait(false);
-				return configManager;
-			});
-
-		public static Task<ConfigurationManager> Config => _config.Value;
-
 		public ButtonConfig ButtonConfig { get; }
 		public Logger Logger { get; }
-		public string Name { get; private set; }
+
+		public static readonly Lazy<ConfigurationManager> Config = new Lazy<ConfigurationManager>(() => new ConfigurationManager());
 
 		private ConfigurationManager()
 		{
-			var settings = ReadSettings<ButtonConfig>();
-			ButtonConfig = settings;
+			ButtonConfig = ReadSettings<ButtonConfig>();
 			using (var logFactory = NLogConfiguration.BuildLogFactory(ButtonConfig.Logging))
 			{
 				Logger = logFactory.GetLogger("kiosk-annunciator");
 			}
-
-
 		}
-
-		private async Task AsyncInit() =>
-			Name = await GetName(ButtonConfig.Id).ConfigureAwait(false);
 
 		private static T ReadSettings<T>()
 		{
@@ -60,26 +42,6 @@ namespace Cumtd.Signage.Kiosk.KioskButton
 				return JsonConvert.DeserializeObject<T>(contents);
 			}
 			throw new FileNotFoundException($"Can't find config file {file.FullName}");
-		}
-
-		private static async Task<string> GetName(string id)
-		{
-			HttpResponseMessage response;
-			using (var client = new HttpClient())
-			{
-				client.DefaultRequestHeaders.Accept.Clear();
-				client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-				response = await client
-					.GetAsync($"https://kiosk.mtd.org/umbraco/api/settings/kiosk/?id={id}")
-					.ConfigureAwait(false);
-			}
-			var json = await response
-				.Content
-				.ReadAsStringAsync()
-				.ConfigureAwait(false);
-
-			var settings = JsonConvert.DeserializeObject<SignSettings>(json);
-			return settings.DisplayName;
 		}
 	}
 }

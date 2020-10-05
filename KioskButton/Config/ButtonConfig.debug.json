@@ -1,13 +1,13 @@
 {
+	"displayName": "Test Sign",
+	"hideConsole": false,
 	"id": "b20297e2-4c13-49b9-be4f-b1842f6108c9",
-	"hideConsole":  false,
-	"readers": {
-		"useSeaDac": false,
-		"usePanicButton": true
-	},
 	"logging": {
 		"console": "trace",
 		"event": "off"
+	},
+	"readers": {
+		"useSeaDac": false
 	}
 }
 

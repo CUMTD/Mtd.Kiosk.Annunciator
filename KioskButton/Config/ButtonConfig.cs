@@ -6,6 +6,7 @@ namespace Cumtd.Signage.Kiosk.KioskButton.Config
 	{
 		public string Id { get; set; }
 		public bool HideConsole { get; set; }
+		public string DisplayName { get; set; }
 		public Readers Readers { get; set; }
 		public Logging Logging { get; set; }
 

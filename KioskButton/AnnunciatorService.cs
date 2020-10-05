@@ -97,7 +97,7 @@ namespace Cumtd.Signage.Kiosk.KioskButton
 					}
 
 					Logger.Debug($"Fetched {departures.Length} departures");
-					DepartureAnnunciator.ReadDepartures(Config.Name, departures, Logger.Info);
+					DepartureAnnunciator.ReadDepartures(Config.ButtonConfig.DisplayName, departures, Logger.Info);
 					Logger.Debug("Done reading");
 					Reading = false;
 				}

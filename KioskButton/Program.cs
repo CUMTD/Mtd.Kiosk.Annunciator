@@ -39,11 +39,11 @@ namespace Cumtd.Signage.Kiosk.KioskButton
 
 		private static bool ShowConsole;
 
-		private static async Task Main()
+		private static void Main()
 		{
 			// get the application config
 			// this does a roundtrip to the server for the app name
-			Config = await ConfigurationManager.Config;
+			Config = ConfigurationManager.Config.Value;
 
 			// register global quit and console toggle hotkeys
 			HotKeyManager.RegisterHotKey(QUIT_KEY, QUIT_MODIFIERS);
@@ -113,6 +113,8 @@ namespace Cumtd.Signage.Kiosk.KioskButton
 
 			Console.WriteLine("CONFIG:");
 			Console.WriteLine($"{JsonConvert.SerializeObject(Config.ButtonConfig, Formatting.Indented)}\n\n");
+
+			Console.WriteLine("Press 'Alt + Shift + P' to Trigger Annunciator\n\n");
 		}
 
 	}
