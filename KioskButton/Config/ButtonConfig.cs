@@ -20,9 +20,8 @@ namespace Cumtd.Signage.Kiosk.KioskButton.Config
 
 	internal class Logging
 	{
-		public string Console { get; set; }
-		public LogLevel ConsoleLogLevel => GetLevel(Console);
-
+		public string File { get; set; }
+		public LogLevel FileLogLevel => GetLevel(File);
 		public string Event { get; set; }
 		public LogLevel EventLogLevel => GetLevel(Event);
 

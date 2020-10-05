@@ -64,10 +64,7 @@ namespace Cumtd.Signage.Kiosk.KioskButton
 			{
 				Console.Clear();
 
-				if (Config.ButtonConfig.Logging.ConsoleLogLevel != LogLevel.Off)
-				{
-					WriteConsoleInfoInfo();
-				}
+				WriteConsoleInfoInfo();
 
 				Console.WriteLine("Type 'quit' to exit");
 				result = Console.ReadLine();

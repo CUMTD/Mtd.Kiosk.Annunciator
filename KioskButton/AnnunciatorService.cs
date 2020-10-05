@@ -46,11 +46,8 @@ namespace Cumtd.Signage.Kiosk.KioskButton
 				readers.Add(new SeaLevelButtonReader(Logger));
 			}
 
-			if (Config.ButtonConfig.Readers.UsePanicButton)
-			{
-				Logger.Debug($"Adding {nameof(AltShiftPKeyboardReader)} reader");
-				readers.Add(new AltShiftPKeyboardReader(Logger));
-			}
+			Logger.Debug($"Adding {nameof(AltShiftPKeyboardReader)} reader");
+			readers.Add(new AltShiftPKeyboardReader(Logger));
 
 			if (readers.Count == 0)
 			{

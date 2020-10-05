@@ -4,6 +4,10 @@
 		<TargetFramework>net48</TargetFramework>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+	  <PlatformTarget>x86</PlatformTarget>
+	</PropertyGroup>
+
 	<ItemGroup>
 	  <None Remove="ftd2xx.dll" />
 	  <None Remove="lib\SeaMAX Dot Net.dll" />
@@ -27,11 +31,8 @@
 	  <Content Include="SeaMAX.dll">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </Content>
-	</ItemGroup>
-
-	<ItemGroup>
 	  <Content Include="ftd2xx.dll">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </Content>
 	</ItemGroup>
 

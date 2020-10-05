@@ -1,6 +1,10 @@
+using System;
+using System.IO;
+using System.Text;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
+using static System.Environment;
 
 namespace Cumtd.Signage.Kiosk.KioskButton.Config
 {
@@ -15,22 +19,34 @@ namespace Cumtd.Signage.Kiosk.KioskButton.Config
 		{
 			var config = new LoggingConfiguration();
 
-			var nullTarget = new NullTarget();
-			config.AddTarget("null", nullTarget);
+			var loggingFile = new FileInfo(Path.Combine(Environment.GetFolderPath(SpecialFolder.Desktop), "annunciator_log.txt"));
+			if (!loggingFile.Exists)
+			{
+				loggingFile.Create();
+			}
+			var fileTarget = new FileTarget
+			{
+				Encoding = Encoding.UTF8,
 
-			var consoleTarget = new ColoredConsoleTarget();
-			config.AddTarget("console", consoleTarget);
+				Name = "fileTarget",
+				ArchiveFileName="logging-{###}.txt",
+				ArchiveNumbering= ArchiveNumberingMode.DateAndSequence,
+				ArchiveEvery = FileArchivePeriod.Day,
+				WriteBom = false,
+				FileName = loggingFile.FullName,
+				MaxArchiveDays = 7,
+				Layout= "${message}${newline}${newline}${exception:format=ToString}"
+			};
 
 			var eventLogTarget = new EventLogTarget
 			{
 				Source = "Kiosk Annunciator Button Service",
 				Layout = "${message}${newline}${newline}${exception:format=ToString}"
 			};
-			config.AddTarget("event", eventLogTarget);
 
 			// and rules
-			config.LoggingRules.Add(new LoggingRule("*", loggingConfig.ConsoleLogLevel, consoleTarget));
-			config.LoggingRules.Add(new LoggingRule("*", loggingConfig.EventLogLevel, eventLogTarget));
+			config.AddRule(loggingConfig.FileLogLevel, LogLevel.Fatal, fileTarget, "*");
+			config.AddRule(loggingConfig.EventLogLevel, LogLevel.Fatal, eventLogTarget, "*");
 
 			return config;
 		}
