@@ -1,21 +1,19 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using KioskAnnunciatorButton.RealTime;
-using Microsoft.Extensions.Logging;
 using Microsoft.CognitiveServices.Speech;
-using System.IO;
+using Microsoft.Extensions.Logging;
 
-namespace KioskAnnunciatorButton.Reader
+namespace KioskAnnunciatorButton.Annunciator
 {
-	public class DepartureReader
+	public class AzureAnnunciator
 	{
 
-		private readonly ILogger<DepartureReader> _logger;
+		private readonly ILogger<AzureAnnunciator> _logger;
 		private readonly SpeechSynthesizer _synth;
-		public DepartureReader(string subscriptionKey, string serviceRegion, ILogger<DepartureReader> logger)
+		public AzureAnnunciator(string subscriptionKey, string serviceRegion, ILogger<AzureAnnunciator> logger)
 		{
 			var config = SpeechConfig.FromSubscription(subscriptionKey, serviceRegion);
 			_synth = new SpeechSynthesizer(config);
@@ -25,12 +23,19 @@ namespace KioskAnnunciatorButton.Reader
 		public async Task ReadDepartures(string stopName, IReadOnlyCollection<Departure> departures)
 		{
 			// no departures
-			if (departures == null || departures.Count == 0)
+			if (departures == null)
 			{
-				await ReadLine("There are no upcoming departures at this time.");
+				_logger.LogWarning("Departures object was null");
+				await ReadError();
+			}
+			else if (departures.Count == 0)
+			{
+				_logger.LogInformation("No upcoming departures");
+				await ReadLine("There are no departures in the next sixty minutes.");
 			}
 			else
 			{
+				_logger.LogInformation("Reading departures");
 				await ReadLine($"Departures for {stopName} as of {DateTime.Now:h:mm tt}");
 				// read each line
 				foreach (var departure in departures)
@@ -49,24 +54,22 @@ namespace KioskAnnunciatorButton.Reader
 
 			if (result.Reason == ResultReason.SynthesizingAudioCompleted)
 			{
-				_logger.LogDebug("Speech synthesized to speaker for text [{text}]", text);
+				_logger.LogDebug("Speech synthesized to speaker for text [{text}], id={id}", text, result.ResultId);
 			}
 			else if (result.Reason == ResultReason.Canceled)
 			{
 				var cancellation = SpeechSynthesisCancellationDetails.FromResult(result);
-				_logger.LogWarning("CANCELED: Reason={reason}", cancellation.Reason);
+				_logger.LogWarning("CANCELED: Reason={reason}, id={id}", cancellation.Reason, result.ResultId);
 
 				if (cancellation.Reason == CancellationReason.Error)
 				{
-					_logger.LogError("CANCELED: ErrorCode={error}", cancellation.ErrorCode);
-					_logger.LogError("CANCELED: ErrorDetails=[{details}]", cancellation.ErrorDetails);
+					_logger.LogError("CANCELED: ErrorCode={error}, ErrorDetails=[{details}], id={id}", cancellation.ErrorCode, cancellation.ErrorDetails, result.ResultId);
 				}
 			}
 			else
 			{
-				_logger.LogWarning("Unknown error Reason={reason}", result.Reason.ToString());
+				_logger.LogWarning("Unknown error Reason={reason}, id={id}", result.Reason.ToString(), result.ResultId);
 			}
-			_logger.LogTrace("Result id={id}", result.ResultId);
 
 		}
 

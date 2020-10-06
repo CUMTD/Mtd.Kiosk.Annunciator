@@ -1,4 +1,4 @@
-using KioskAnnunciatorButton.Reader;
+using KioskAnnunciatorButton.Annunciator;
 using KioskAnnunciatorButton.RealTime;
 using KioskAnnunciatorButton.WorkerService.Readers;
 using Microsoft.Extensions.Configuration;
@@ -25,17 +25,11 @@ namespace KioskAnnunciatorButton.WorkerService
 			.ConfigureServices((hostContext, services) =>
 			{
 				services
-					.AddTransient(f =>
-					{
-						var logger = f
-							.GetRequiredService<ILogger<DepartureReader>>();
-
-						return new DepartureReader(
-							hostContext.Configuration.GetValue<string>("azure:searchKey"),
-							hostContext.Configuration.GetValue<string>("azure:searchRegion"),
-							logger
-						);
-					});
+					.AddTransient(f => new AzureAnnunciator(
+						hostContext.Configuration.GetValue<string>("azure:searchKey"),
+						hostContext.Configuration.GetValue<string>("azure:searchRegion"),
+						f.GetRequiredService<ILogger<AzureAnnunciator>>()
+					));
 
 				services.AddTransient<RealTimeClient>();
 

@@ -1,5 +1,3 @@
-using System;
-
 namespace KioskAnnunciatorButton.WorkerService.Readers
 {
 	internal interface IReader

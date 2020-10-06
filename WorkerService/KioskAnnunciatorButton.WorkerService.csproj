@@ -27,7 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Annunciator\KioskAnnunciatorButton.Annunciator.csproj" />
     <ProjectReference Include="..\ButtonReader\KioskAnnunciatorButton.SeaLevelReader.csproj" />
-    <ProjectReference Include="..\Reader\KioskAnnunciatorButton.Reader.csproj" />
   </ItemGroup>
 </Project>

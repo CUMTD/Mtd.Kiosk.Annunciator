@@ -14,15 +14,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KioskAnnunciatorButton.Service", "Service\KioskAnnunciatorButton.Service.csproj", "{9E69A3FA-3246-4E96-9CEA-851E30CF535A}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KioskAnnunciatorButton.RealTime", "RealTime\KioskAnnunciatorButton.RealTime.csproj", "{250E7F13-501E-43FA-AD18-1CE3C51088F0}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KioskAnnunciatorButton.Reader", "Reader\KioskAnnunciatorButton.Reader.csproj", "{8C058B2C-167C-4A78-B381-0E7A2F110435}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KioskAnnunciatorButton.SeaLevelReader", "ButtonReader\KioskAnnunciatorButton.SeaLevelReader.csproj", "{A1BB8BDD-713F-4FAB-AF1F-A78E1ABDF29B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KioskAnnunciatorButton.WorkerService", "WorkerService\KioskAnnunciatorButton.WorkerService.csproj", "{48FC6522-1CB5-4F4F-A4CA-31628AADB4CA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KioskAnnunciatorButton.Annunciator", "Annunciator\KioskAnnunciatorButton.Annunciator.csproj", "{35F0DD4F-C8B5-40E2-B55F-3F5F00EEDA97}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,18 +28,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{9E69A3FA-3246-4E96-9CEA-851E30CF535A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9E69A3FA-3246-4E96-9CEA-851E30CF535A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9E69A3FA-3246-4E96-9CEA-851E30CF535A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9E69A3FA-3246-4E96-9CEA-851E30CF535A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{250E7F13-501E-43FA-AD18-1CE3C51088F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{250E7F13-501E-43FA-AD18-1CE3C51088F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{250E7F13-501E-43FA-AD18-1CE3C51088F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{250E7F13-501E-43FA-AD18-1CE3C51088F0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8C058B2C-167C-4A78-B381-0E7A2F110435}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8C058B2C-167C-4A78-B381-0E7A2F110435}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8C058B2C-167C-4A78-B381-0E7A2F110435}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8C058B2C-167C-4A78-B381-0E7A2F110435}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A1BB8BDD-713F-4FAB-AF1F-A78E1ABDF29B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A1BB8BDD-713F-4FAB-AF1F-A78E1ABDF29B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A1BB8BDD-713F-4FAB-AF1F-A78E1ABDF29B}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -50,6 +40,10 @@ Global
 		{48FC6522-1CB5-4F4F-A4CA-31628AADB4CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{48FC6522-1CB5-4F4F-A4CA-31628AADB4CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{48FC6522-1CB5-4F4F-A4CA-31628AADB4CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35F0DD4F-C8B5-40E2-B55F-3F5F00EEDA97}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35F0DD4F-C8B5-40E2-B55F-3F5F00EEDA97}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35F0DD4F-C8B5-40E2-B55F-3F5F00EEDA97}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35F0DD4F-C8B5-40E2-B55F-3F5F00EEDA97}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
