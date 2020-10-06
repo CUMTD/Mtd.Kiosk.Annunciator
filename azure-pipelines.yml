@@ -12,11 +12,11 @@ pool:
 
 variables:
   solution: '**/*.sln'
-  buildPlatform: 'x86'
+  rt: 'win10-x86'
   buildConfiguration: 'Release'
-  major: '4'
-  minor: '0'
-  patch: $[counter('versioncounter', 0)]
+  #major: '4'
+  #minor: '0'
+  #patch: $[counter('versioncounter', 0)]
 
 steps:
 - task: DotNetCoreCLI@2
@@ -25,14 +25,17 @@ steps:
     command: restore
     feedsToUse: config
     nugetConfigPath: 'NuGet.config'
+    projects: $(solution)
     verbosityRestore: 'quiet'
 
 - task: DotNetCoreCLI@2
   displayName: Build
   inputs:
     command: build
-    projects: '**/*.sln'    
+    projects: $(solution)
     verbosityBuild: 'normal'
+    arguments: '-runtime $(rt) --configuration $(BuildConfiguration)'
+
 
 - task: CopyFiles@2
   displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
