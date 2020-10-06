@@ -2,75 +2,84 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using Cumtd.Signage.Kiosk.RealTime.Models;
-using Newtonsoft.Json;
+using Microsoft.Extensions.Logging;
+using System.Text.Json;
 
-namespace Cumtd.Signage.Kiosk.RealTime
+namespace KioskAnnunciatorButton.RealTime
 {
-	public sealed class RealTimeClient : IDisposable
+	public sealed class RealTimeClient
 	{
+		private readonly HttpClient _client = KioskHttpClient.Instance();
 
-		public bool Disposed { get; private set; }
-		private HttpClient HttpClient { get; set; }
+		private readonly ILogger<RealTimeClient> _logger;
 
-		public RealTimeClient()
+		public RealTimeClient(ILogger<RealTimeClient> logger)
 		{
-			HttpClient = new HttpClient();
-			HttpClient.DefaultRequestHeaders.Accept.Clear();
-			HttpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+			_client = KioskHttpClient.Instance();
+			_logger = logger ?? throw new ArgumentException(nameof(logger));
 		}
 
 		public async Task<Departure[]> GetRealtime(string id)
 		{
-			if (Disposed)
+			try
 			{
-				throw new ObjectDisposedException(nameof(HttpClient));
+				var result = await GetDeparturesFromServer(id);
+				var departures = await ConvertResults(result);
+				return departures.ToArray();
 			}
-
-			var json = await GetJson(id).ConfigureAwait(false);
-			var dataItems = ConvertJson(json);
-			return ConvertToDepartures(dataItems);
-		}
-
-		private async Task<string> GetJson(string id)
-		{
-			var result = await HttpClient
-				.GetAsync($"https://kiosk.mtd.org/umbraco/api/realtime/getdepartures?id={id}&log=false")
-				.ConfigureAwait(false);
-
-			return await result
-				.Content
-				.ReadAsStringAsync()
-				.ConfigureAwait(false);
-		}
-
-		private static IEnumerable<JsonDeparture> ConvertJson(string json) =>
-			JsonConvert.DeserializeObject<IEnumerable<JsonDeparture>>(json);
-
-		private static Departure[] ConvertToDepartures(IEnumerable<JsonDeparture> items)
-		{
-			var itemsToConvert = (items ?? Enumerable.Empty<JsonDeparture>())
-				.ToArray();
-
-			var departures = new List<Departure>();
-			// ReSharper disable once LoopCanBeConvertedToQuery
-			foreach (var item in itemsToConvert)
+			catch (Exception ex)
 			{
-				var baseName = $"{item.Number} {item.Direction} {item.Name}";
-				var name = item.HasModifier ? $"{baseName} to {item.Modifier}" : baseName;
-				departures.Add(new Departure(name, item.Display));
+				_logger.LogError(ex, "Failed to fetch departures");
+				return Enumerable.Empty<Departure>().ToArray();
 			}
-
-			return departures.ToArray();
 		}
 
-		public void Dispose()
+		public async Task SendHeartbeat(string id)
 		{
-			Disposed = true;
-			HttpClient?.Dispose();
-			HttpClient = null;
+			var url = $"/umbraco/api/health/buttonheartbeat?id={id}";
+			_logger.LogDebug("Sending heartbeat for {id} to {url}", id, url);
+			var result = await _client.GetAsync(url);
+			if (result.IsSuccessStatusCode)
+			{
+				_logger.LogDebug("Sent heartbeat successfully");
+			}
+			else
+			{
+				_logger.LogWarning("Failed to send heartbeat with status code {code}", result.StatusCode);
+			}
+		}
+
+		private async Task<HttpResponseMessage> GetDeparturesFromServer(string id)
+		{
+			var url = $"/umbraco/api/realtime/getdepartures?id={id}&log=false";
+			_logger.LogDebug("Fetching {url}", url);
+			var start = DateTime.Now;
+			var result = await _client
+				.GetAsync($"/umbraco/api/realtime/getdepartures?id={id}&log=false");
+			var end = DateTime.Now;
+			_logger.LogTrace("Finished in {ms} ms", (end - start).TotalMilliseconds);
+			_logger.LogDebug("Fetched with code {code}", result.StatusCode);
+			return result;
+		}
+
+		private static async Task<IEnumerable<Departure>> ConvertResults(HttpResponseMessage result)
+		{
+			var stream = await result.Content.ReadAsStreamAsync();
+			var departures = await JsonSerializer.DeserializeAsync<JsonDeparture[]>(stream, new JsonSerializerOptions
+			{
+				PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+			});
+			var converted = departures
+				.Select(ConvertJsonDepartureToDeparture);
+			return converted;
+		}
+
+		private static Departure ConvertJsonDepartureToDeparture(JsonDeparture item)
+		{
+			var baseName = $"{item.Number} {item.Direction} {item.Name}";
+			var name = item.HasModifier ? $"{baseName} to {item.Modifier}" : baseName;
+			return new Departure(name, item.Display);
 		}
 	}
 }
