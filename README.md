@@ -3,34 +3,31 @@ Read departures when the annunciator button is pressed on a kiosk.
 
 [![Build Status](https://dev.azure.com/cumtd/MTD/_apis/build/status/CUMTD.KioskAnnunciatorButton?branchName=master)](https://dev.azure.com/cumtd/MTD/_build/latest?definitionId=14&branchName=master)
 
-## Installation
-1. Build the `Cumtd.Signage.Kiosk.KioskButton` project in release mode.
-2. Copy the output of `/KioskButton/bin/x86/Release/` to a folder at the root directory of the target PC.
-3. Update the id in `ButtonConfig.json` to match the GUID of the kiosk from https://kiosk.mtd.org/umbraco/.
-4. Install the [SeaMAX software and drivers](https://www.sealevel.com/support/software-seamax-windows/) on the target PC.
-5. Reboot.
-5. In an elevated comand prompt, run `Cumtd.Signage.Kiosk.KioskButton.exe install`.
-6. Plug in button USB cable.
+## Pre Requisites
+
+Install the [SeaMAX software and drivers](https://www.sealevel.com/support/software-seamax-windows/) on the target PC.
+
+## Logging
+
+Logging is provided by [Serilog](https://serilog.net/).\
+The application is configured with three logging targets.
+
+* Console (Only for debugging)
+* File (Files can be found in `/Logs`)
+* [Seq](https://datalust.co/seq)
+
+Logging is configured in `appsettings.json`
 
 ## Projects
 
-### Cumtd.Signage.Kiosk.KioskButton
-This is the main service. It runs as a hidden console application.
+### KioskAnnunciatorButton.Annunciator
+This project handles actually reading out the departures. It uses [Azure Cognitive Speech Services](https://azure.microsoft.com/en-us/services/cognitive-services/speech-services/).
 
-### Cumtd.Signage.Kiosk.Annunciator
-Handles the text to speach.
+### KioskAnnunciatorButton.RealTime
+This project handles the send/recieve of realtime info from the main kiosk server.
 
-### Cumtd.Signage.Kiosk.RealTime
-Handles the fetching and conversion of real-time information.
+### KioskAnnunciatorButton.SeaLevelReader
+This project handles reading button presses from the [SeaLevel reader](https://www.sealevel.com/product/8113-usb-to-4-isolated-inputs-digital-interface-adapter/).
 
-### Cumtd.Signage.Kiosk.SeaLevel
-Handles the interaction with the SeaLevel Sea DAC button.
-
-
-## Hotkeys
-When the applicaiton is running, the following hotkeys can be use:
-
-| Keys                           | Result                |
-|--------------------------------|-----------------------|
-| `CTRL` + `ALT` + `SHIFT` + `C` | Toggle Console Window |
-| `CTRL` + `ALT` + `SHIFT` + `Q` | Exit Application      |
+### KioskAnnunciatorButton.WorkerService
+The main control service. This should be installed as a windows service in production.
