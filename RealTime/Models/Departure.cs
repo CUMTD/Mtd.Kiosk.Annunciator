@@ -1,6 +1,6 @@
 using System;
 
-namespace Cumtd.Signage.Kiosk.RealTime.Models
+namespace KioskAnnunciatorButton.RealTime
 {
 	public class Departure
 	{

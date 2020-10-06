@@ -1,4 +1,4 @@
-namespace Cumtd.Signage.Kiosk.RealTime.Models
+namespace KioskAnnunciatorButton.RealTime
 {
 	internal sealed class JsonDeparture
 	{

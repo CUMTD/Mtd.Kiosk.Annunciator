@@ -38,8 +38,6 @@ csharp_style_var_when_type_is_apparent = true:error
 trim_trailing_whitespace = true
 
 [*.xml]
-indent_size = 4
-indent_style = space
 insert_final_newline = false
 trim_trailing_whitespace = true
 
