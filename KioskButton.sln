@@ -10,6 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.gitignore = .gitignore
 		azure-pipelines.yml = azure-pipelines.yml
 		LICENSE = LICENSE
+		NuGet.config = NuGet.config
 		README.md = README.md
 	EndProjectSection
 EndProject
@@ -21,7 +22,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KioskAnnunciatorButton.Read
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KioskAnnunciatorButton.SeaLevelReader", "ButtonReader\KioskAnnunciatorButton.SeaLevelReader.csproj", "{A1BB8BDD-713F-4FAB-AF1F-A78E1ABDF29B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KioskAnnunciatorButton.WorkerService", "WorkerService\KioskAnnunciatorButton.WorkerService.csproj", "{48FC6522-1CB5-4F4F-A4CA-31628AADB4CA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KioskAnnunciatorButton.WorkerService", "WorkerService\KioskAnnunciatorButton.WorkerService.csproj", "{48FC6522-1CB5-4F4F-A4CA-31628AADB4CA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

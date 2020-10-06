@@ -23,6 +23,8 @@ steps:
   displayName: NuGet Restore
   inputs:
     command: restore
+    feedsToUse: config
+    nugetConfigPath: 'NuGet.config'
     verbosityRestore: 'quiet'
 
 - task: DotNetCoreCLI@2
