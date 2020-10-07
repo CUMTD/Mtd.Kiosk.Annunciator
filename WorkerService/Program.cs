@@ -24,8 +24,7 @@ namespace KioskAnnunciatorButton.WorkerService
 			}
 			catch (Exception ex)
 			{
-				File.WriteAllText(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "CrashLog.txt"), $"Service failed to start:\n\n{ex.Message}");
-				Log.Logger.Fatal(ex, "Application unable to start");
+				Log.Logger?.Fatal(ex, "Application unable to start");
 				throw ex;
 			}
 		}
