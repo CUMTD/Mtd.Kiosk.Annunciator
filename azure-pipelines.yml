@@ -12,11 +12,6 @@ pool:
 
 variables:
   solution: '**/KioskButton.sln'
-  rt: 'win10-x86'
-  buildConfiguration: 'Release'
-  #major: '4'
-  #minor: '0'
-  #patch: $[counter('versioncounter', 0)]
 
 steps:
 - task: DotNetCoreCLI@2
@@ -34,7 +29,6 @@ steps:
     command: build
     projects: $(solution)
     verbosityBuild: 'normal'
-    arguments: '-runtime $(rt) --configuration $(BuildConfiguration)'
 
 
 - task: CopyFiles@2
