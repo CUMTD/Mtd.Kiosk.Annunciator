@@ -42,7 +42,7 @@ steps:
     PackageFormat: 'NuPkg'
     PackageVersion: '$(major).$(minor).$(patch)'
     SourcePath: '$(Build.SourcesDirectory)\$(packProject)'
-    OutputPath: '$(Build.ArtifactStagingDirectory)\drop'
+    OutputPath: '$(Build.ArtifactStagingDirectory)'
     NuGetAuthor: 'Ryan Blackman'
     NuGetTitle: 'Kiosk Annunciator Button'
 
@@ -52,11 +52,13 @@ steps:
     ArtifactName: 'OctopusPkg'
     publishLocation: 'Container'
 
+
+
 - task: OctopusPush@4
   inputs:
     OctoConnectedServiceName: 'Octopus Deploy Service'
     Space: 'Spaces-1'
-    Package: '$(Build.ArtifactStagingDirectory)/drop/*.zip'
+    Package: '$(Build.ArtifactStagingDirectory)/*'
     Replace: 'true'
 
 - task: OctopusCreateRelease@4
