@@ -15,7 +15,7 @@ variables:
   major: 4
   minor: 0
   patch: $(Build.BuildID)
-  packProject: '**\WorkerService'
+  packProject: 'WorkerService'
 
 steps:
 - task: DotNetCoreCLI@2
