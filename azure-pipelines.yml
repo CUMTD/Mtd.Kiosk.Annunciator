@@ -12,7 +12,6 @@ pool:
 
 variables:
   solution: '**/KioskButton.sln'
-  project: '**/KioskAnnunciatorButton.WorkerService.csproj'
   major: 4
   minor: 0
   patch: $(Build.BuildID)
@@ -32,7 +31,7 @@ steps:
   displayName: Build
   inputs:
     command: build
-    projects: $(project)
+    projects: $(solution)
     majorVersion: $(major)
     minorVersion: $(minor)
     patchVersion: $(patch)
@@ -44,7 +43,7 @@ steps:
     PackageId: 'KioskAnnunciatorButton.WorkerService'
     PackageFormat: 'NuPkg'
     PackageVersion: '$(major).$(minor).$(patch)'
-    SourcePath: '$(Build.SourceDirectory)\WorkerService\bin\release\netcoreapp3.1\win10-x86'
+    SourcePath: '$(Build.SourcesDirectory)\$(packProject)'
     OutputPath: '$(Build.ArtifactStagingDirectory)'
     NuGetAuthor: 'Ryan Blackman'
     NuGetTitle: 'Kiosk Annunciator Button'
