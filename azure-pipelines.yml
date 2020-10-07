@@ -14,7 +14,7 @@ variables:
   solution: '**/KioskButton.sln'
   major: 4
   minor: 0
-  patch: $(BuildID)
+  patch: $(Build.BuildID)
 
 steps:
 - task: DotNetCoreCLI@2
@@ -39,7 +39,7 @@ steps:
   inputs:
     PackageId: 'KioskAnnunciatorButton.WorkerService'
     PackageFormat: 'NuPkg'
-    PackageVersion: '$(major).$(minor).$(patch)'
+    PackageVersion: '$(major).$(minor).$(BuildID)'
     SourcePath: '$(Build.SourcesDirectory)\published'
     OutputPath: '$(Build.ArtifactStagingDirectory)'
     NuGetAuthor: 'Ryan Blackman'
