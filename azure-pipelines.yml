@@ -15,7 +15,7 @@ variables:
   major: 4
   minor: 0
   patch: $(Build.BuildID)
-  packProject: 'WorkerService/bin/release/netcoreapp3.1'
+  packProject: 'WorkerService/bin/Release/netcoreapp3.1/win-x86'
 
 steps:
 - task: DotNetCoreCLI@2
