@@ -99,10 +99,10 @@ namespace KioskAnnunciatorButton.WorkerService
 			try
 			{
 				var kioskId = _config
-					.GetValue<string>("kiosk:id");
+					.GetValue<string>("id");
 
 				var stopName = _config
-					.GetValue<string>("kiosk:displayName");
+					.GetValue<string>("displayName");
 
 				var departures = await _realTimeClient
 					.GetRealtime(kioskId);
@@ -124,7 +124,7 @@ namespace KioskAnnunciatorButton.WorkerService
 		{
 			if (DateTime.Now > _nextHeartbeat)
 			{
-				var id = _config.GetValue<string>("kiosk:id");
+				var id = _config.GetValue<string>("id");
 				try
 				{
 					await _realTimeClient.SendHeartbeat(id);
