@@ -33,11 +33,12 @@ namespace KioskAnnunciatorButton.WorkerService
 		public static IHostBuilder CreateHostBuilder(string[] args) =>
 			Host
 			.CreateDefaultBuilder(args)
-			.ConfigureAppConfiguration(config =>
+			.ConfigureAppConfiguration((ctx, config) =>
 			{
 				config
 					.SetBasePath(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location))
-					.AddJsonFile("appsettings.json", false, true);
+					.AddJsonFile("appsettings.json", false, true)
+					.AddJsonFile($"appsettings.{ctx.HostingEnvironment.EnvironmentName}.json", true, true);
 			})
 			.ConfigureServices((hostContext, services) =>
 			{
