@@ -12,21 +12,60 @@ pool:
 
 variables:
   solution: '**/KioskButton.sln'
-  buildVersion: 4.0.$(BuildID)
+  major: 4
+  minor: 0
+  patch: $(BuildID)
 
 steps:
 - task: DotNetCoreCLI@2
-  displayName: NuGet Restore
+  displayName: 'NuGet Restore'
   inputs:
-    command: restore
-    feedsToUse: config
+    command: 'restore'
+    feedsToUse: 'config'
     nugetConfigPath: 'NuGet.config'
-    projects: $(solution)
-    verbosityRestore: 'quiet'
+    projects: '$(solution)'
+    verbosityRestore: 'Quiet'
 
 - task: DotNetCoreCLI@2
   displayName: Build
   inputs:
     command: build
     projects: $(solution)
-    verbosityBuild: 'normal'
+    majorVersion: $(major)
+    minorVersion: $(minor)
+    patchVersion: $(patch)
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'OctopusPkg'
+    publishLocation: 'Container'
+
+- task: OctopusPush@4
+  inputs:
+    OctoConnectedServiceName: 'Octopus Deploy Service'
+    Space: 'Spaces-1'
+    Package: '$(Build.ArtifactStagingDirectory)/packages/*.zip'
+    Replace: 'true'
+
+- task: OctopusCreateRelease@4
+  inputs:
+    OctoConnectedServiceName: 'Octopus Deploy Service'
+    Space: 'Spaces-1'
+    ProjectGroup: 'ProjectGroups-21'
+    ProjectName: 'Projects-203'
+    Channel: 'Channels-203'
+    DeployToEnvironment: 'Environments-1'
+    DeployForTenants: '*'
+    DeploymentProgress: true
+
+- task: OctopusPromote@4
+  inputs:
+    OctoConnectedServiceName: 'Octopus Deploy Service'
+    Space: 'Spaces-1'
+    ProjectGroup: 'ProjectGroups-21'
+    Project: 'Projects-203'
+    From: 'Environments-1'
+    To: 'Environments-21'
+    ShowProgress: true
+    DeployForTenants: '*'
