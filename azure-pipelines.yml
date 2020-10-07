@@ -36,7 +36,7 @@ steps:
     minorVersion: $(minor)
     patchVersion: $(patch)
     configuration: 'release'
-    arguments: '--runtime win-x86'
+    arguments: '--runtime win-x86 --configuration release'
 
 - task: OctopusPack@4
   inputs:
