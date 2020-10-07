@@ -15,7 +15,7 @@ variables:
   major: 4
   minor: 0
   patch: $(Build.BuildID)
-  packProject: 'WorkerService'
+  packProject: 'WorkerService/bin/Release/netcoreapp3.1'
 
 steps:
 - task: DotNetCoreCLI@2
@@ -35,6 +35,8 @@ steps:
     majorVersion: $(major)
     minorVersion: $(minor)
     patchVersion: $(patch)
+    configuration: 'release'
+    arguments: '--runtime win-x86'
 
 - task: OctopusPack@4
   inputs:
