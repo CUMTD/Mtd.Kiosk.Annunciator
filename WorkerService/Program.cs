@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using KioskAnnunciatorButton.Annunciator;
 using KioskAnnunciatorButton.RealTime;
 using KioskAnnunciatorButton.WorkerService.Readers;
@@ -32,7 +33,9 @@ namespace KioskAnnunciatorButton.WorkerService
 			.CreateDefaultBuilder(args)
 			.ConfigureAppConfiguration(config =>
 			{
-				config.AddJsonFile("appsettings.json", false, true);
+				config
+					.SetBasePath(Directory.GetCurrentDirectory())
+					.AddJsonFile("appsettings.json", false, true);
 			})
 			.ConfigureServices((hostContext, services) =>
 			{
