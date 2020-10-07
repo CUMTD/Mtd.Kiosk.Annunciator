@@ -72,7 +72,8 @@ steps:
     Channel: 'Channels-203'
     DeployToEnvironment: 'Environments-1'
     DeployForTenants: '*'
-    DeploymentProgress: true
+    DeploymentProgress: true    
+    AdditionalArguments: '--deploymentTimeout=01:00:00'
 
 - task: OctopusPromote@4
   inputs:
@@ -84,3 +85,4 @@ steps:
     To: 'Environments-21'
     ShowProgress: true
     DeployForTenants: '*'
+    AdditionalArguments: '--deploymentTimeout=01:00:00'
