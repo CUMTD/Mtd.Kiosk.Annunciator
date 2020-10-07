@@ -1,3 +1,4 @@
+using System;
 using KioskAnnunciatorButton.Annunciator;
 using KioskAnnunciatorButton.RealTime;
 using KioskAnnunciatorButton.WorkerService.Readers;
@@ -11,9 +12,20 @@ namespace KioskAnnunciatorButton.WorkerService
 {
 	public sealed class Program
 	{
-		public static void Main(string[] args) => CreateHostBuilder(args)
-				.Build()
-				.Run();
+		public static void Main(string[] args)
+		{
+			try
+			{
+				CreateHostBuilder(args)
+					.Build()
+					.Run();
+			}
+			catch (Exception ex)
+			{
+				Log.Logger.Fatal(ex, "Application unable to start");
+				throw ex;
+			}
+		}
 
 		public static IHostBuilder CreateHostBuilder(string[] args) =>
 			Host
