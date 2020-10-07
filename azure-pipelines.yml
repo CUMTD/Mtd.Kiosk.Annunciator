@@ -15,6 +15,7 @@ variables:
   major: 4
   minor: 0
   patch: $(Build.BuildID)
+  packProject: '**\WorkerService'
 
 steps:
 - task: DotNetCoreCLI@2
@@ -40,8 +41,8 @@ steps:
     PackageId: 'KioskAnnunciatorButton.WorkerService'
     PackageFormat: 'NuPkg'
     PackageVersion: '$(major).$(minor).$(patch)'
-    SourcePath: '$(Build.SourcesDirectory)\published'
-    OutputPath: '$(Build.ArtifactStagingDirectory)'
+    SourcePath: '$(Build.SourcesDirectory)\$(packProject)'
+    OutputPath: '$(Build.ArtifactStagingDirectory)\drop'
     NuGetAuthor: 'Ryan Blackman'
     NuGetTitle: 'Kiosk Annunciator Button'
 
@@ -55,7 +56,7 @@ steps:
   inputs:
     OctoConnectedServiceName: 'Octopus Deploy Service'
     Space: 'Spaces-1'
-    Package: '$(Build.ArtifactStagingDirectory)/packages/*.zip'
+    Package: '$(Build.ArtifactStagingDirectory)/drop/*.zip'
     Replace: 'true'
 
 - task: OctopusCreateRelease@4
