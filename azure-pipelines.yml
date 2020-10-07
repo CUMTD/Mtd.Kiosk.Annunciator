@@ -11,7 +11,7 @@ pool:
   vmImage: 'windows-latest'
 
 variables:
-  solution: '**/*.sln'
+  solution: '**/KioskButton.sln'
   rt: 'win10-x86'
   buildConfiguration: 'Release'
   #major: '4'
