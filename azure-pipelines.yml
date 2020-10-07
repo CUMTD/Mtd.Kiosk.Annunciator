@@ -54,8 +54,6 @@ steps:
     ArtifactName: 'OctopusPkg'
     publishLocation: 'Container'
 
-
-
 - task: OctopusPush@4
   inputs:
     OctoConnectedServiceName: 'Octopus Deploy Service'
