@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.EventLog;
 using Serilog;
 
 namespace KioskAnnunciatorButton.WorkerService
@@ -42,6 +43,14 @@ namespace KioskAnnunciatorButton.WorkerService
 			.ConfigureServices((hostContext, services) =>
 			{
 				services
+				.AddHostedService<Worker>()
+				.Configure<EventLogSettings>(config =>
+				{
+					config.LogName = "Kiosk Annunciator";
+					config.SourceName = "Kiosk Annunciator Source";
+				});
+
+				services
 					.AddTransient(f => new AzureAnnunciator(
 						hostContext.Configuration.GetValue<string>("azure:searchKey"),
 						hostContext.Configuration.GetValue<string>("azure:searchRegion"),
@@ -63,7 +72,7 @@ namespace KioskAnnunciatorButton.WorkerService
 
 				logging.ClearProviders();
 				logging.AddSerilog();
-			});
+			})
+			.UseWindowsService();
 	}
-
 }
