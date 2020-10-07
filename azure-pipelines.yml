@@ -12,6 +12,7 @@ pool:
 
 variables:
   solution: '**/KioskButton.sln'
+  project: '**/KioskAnnunciatorButton.WorkerService.csproj'
   major: 4
   minor: 0
   patch: $(Build.BuildID)
@@ -31,7 +32,7 @@ steps:
   displayName: Build
   inputs:
     command: build
-    projects: $(solution)
+    projects: $(project)
     majorVersion: $(major)
     minorVersion: $(minor)
     patchVersion: $(patch)
@@ -43,7 +44,7 @@ steps:
     PackageId: 'KioskAnnunciatorButton.WorkerService'
     PackageFormat: 'NuPkg'
     PackageVersion: '$(major).$(minor).$(patch)'
-    SourcePath: '$(Build.SourcesDirectory)\$(packProject)'
+    SourcePath: '**/$(BuildConfiguration)/**/?(*.exe|*.dll|*.pdb)'
     OutputPath: '$(Build.ArtifactStagingDirectory)'
     NuGetAuthor: 'Ryan Blackman'
     NuGetTitle: 'Kiosk Annunciator Button'
