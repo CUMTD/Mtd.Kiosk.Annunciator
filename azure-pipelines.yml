@@ -44,7 +44,7 @@ steps:
     PackageId: 'KioskAnnunciatorButton.WorkerService'
     PackageFormat: 'NuPkg'
     PackageVersion: '$(major).$(minor).$(patch)'
-    SourcePath: '**/$(BuildConfiguration)/**/?(*.exe|*.dll|*.pdb)'
+    SourcePath: '$(Build.SourceDirectory)\WorkerService\bin\release\netcoreapp3.1\win10-x86'
     OutputPath: '$(Build.ArtifactStagingDirectory)'
     NuGetAuthor: 'Ryan Blackman'
     NuGetTitle: 'Kiosk Annunciator Button'
