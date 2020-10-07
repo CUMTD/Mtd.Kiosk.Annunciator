@@ -39,7 +39,7 @@ steps:
   inputs:
     PackageId: 'KioskAnnunciatorButton.WorkerService'
     PackageFormat: 'NuPkg'
-    PackageVersion: '$(major).$(minor).$(BuildID)'
+    PackageVersion: '$(major).$(minor).$(patch)'
     SourcePath: '$(Build.SourcesDirectory)\published'
     OutputPath: '$(Build.ArtifactStagingDirectory)'
     NuGetAuthor: 'Ryan Blackman'
