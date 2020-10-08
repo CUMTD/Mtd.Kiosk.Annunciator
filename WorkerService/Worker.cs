@@ -124,15 +124,9 @@ namespace KioskAnnunciatorButton.WorkerService
 		{
 			if (DateTime.Now > _nextHeartbeat)
 			{
-				var id = _config.GetValue<string>("id");
 				try
 				{
-					await _realTimeClient.SendHeartbeat(id);
-					_logger.LogDebug("Sent heartbeat for {kioskId}", id);
-				}
-				catch (Exception ex)
-				{
-					_logger.LogWarning(ex, "Failed to send heartbeat for {kioskId}", id);
+					await _realTimeClient.SendHeartbeat(_config.GetValue<string>("id"));
 				}
 				finally
 				{

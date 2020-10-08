@@ -38,15 +38,22 @@ namespace KioskAnnunciatorButton.RealTime
 		public async Task SendHeartbeat(string id)
 		{
 			var url = $"/umbraco/api/health/buttonheartbeat?id={id}";
-			_logger.LogDebug("Sending heartbeat for {id} to {url}", id, url);
-			var result = await _client.GetAsync(url);
-			if (result.IsSuccessStatusCode)
+			_logger.LogTrace("Sending heartbeat for {id} to {url}", id, url);
+			try
 			{
-				_logger.LogDebug("Sent heartbeat successfully");
+				var result = await _client.GetAsync(url);
+				if (result.IsSuccessStatusCode)
+				{
+					_logger.LogTrace("Sent heartbeat successfully");
+				}
+				else
+				{
+					_logger.LogWarning("Failed to send heartbeat with status code {code}", result.StatusCode);
+				}
 			}
-			else
+			catch(Exception ex)
 			{
-				_logger.LogWarning("Failed to send heartbeat with status code {code}", result.StatusCode);
+				_logger.LogWarning(ex, "Failed to send heartbeat to {url}", url);
 			}
 		}
 
