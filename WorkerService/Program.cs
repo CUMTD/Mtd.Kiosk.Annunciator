@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Reflection;
+using System.Runtime.Versioning;
 using KioskAnnunciatorButton.Annunciator;
 using KioskAnnunciatorButton.RealTime;
 using KioskAnnunciatorButton.WorkerService.Readers;
@@ -13,6 +14,7 @@ using Serilog;
 
 namespace KioskAnnunciatorButton.WorkerService
 {
+	[SupportedOSPlatform("windows")]
 	public sealed class Program
 	{
 		public static void Main(string[] args)
@@ -26,7 +28,7 @@ namespace KioskAnnunciatorButton.WorkerService
 			catch (Exception ex)
 			{
 				Log.Logger?.Fatal(ex, "Application unable to start");
-				throw ex;
+				throw;
 			}
 		}
 
