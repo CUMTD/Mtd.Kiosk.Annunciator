@@ -13,15 +13,26 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		readme.md = readme.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mtd.Kiosk.Annunciator.Core", "Mtd.Kiosk.Annunciator.Core\Mtd.Kiosk.Annunciator.Core.csproj", "{2CF2B145-E623-4675-94E5-0F03AD8D1E41}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mtd.Kiosk.Annunciator.Core", "Mtd.Kiosk.Annunciator.Core\Mtd.Kiosk.Annunciator.Core.csproj", "{2CF2B145-E623-4675-94E5-0F03AD8D1E41}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mtd.Kiosk.Annunciator.Azure", "Mtd.Kiosk.Annunciator.Azure\Mtd.Kiosk.Annunciator.Azure.csproj", "{C23D8D50-B212-4442-8F87-F4F282E23C3E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mtd.Kiosk.Annunciator.Azure", "Mtd.Kiosk.Annunciator.Azure\Mtd.Kiosk.Annunciator.Azure.csproj", "{C23D8D50-B212-4442-8F87-F4F282E23C3E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mtd.Kiosk.Annunciator.Readers.Simple", "Mtd.Kiosk.Annunciator.Readers.Simple\Mtd.Kiosk.Annunciator.Readers.Simple.csproj", "{D54449C8-1760-4C02-9DB8-F4CDAE0E16EB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mtd.Kiosk.Annunciator.Readers.Simple", "Mtd.Kiosk.Annunciator.Readers.Simple\Mtd.Kiosk.Annunciator.Readers.Simple.csproj", "{D54449C8-1760-4C02-9DB8-F4CDAE0E16EB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mtd.Kiosk.Annunciator.Service", "Mtd.Kiosk.Annunciator.Service\Mtd.Kiosk.Annunciator.Service.csproj", "{48EFDEA1-3057-47D0-9031-D83F8D373555}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mtd.Kiosk.Annunciator.Service", "Mtd.Kiosk.Annunciator.Service\Mtd.Kiosk.Annunciator.Service.csproj", "{48EFDEA1-3057-47D0-9031-D83F8D373555}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mtd.Kiosk.Annunciator.Realtime.UmbracoApi", "Mtd.Kiosk.Annunciator.Realtime.UmbracoApi\Mtd.Kiosk.Annunciator.Realtime.UmbracoApi.csproj", "{608E938D-5B40-4651-8492-01E1370EF7DA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mtd.Kiosk.Annunciator.Realtime.UmbracoApi", "Mtd.Kiosk.Annunciator.Realtime.UmbracoApi\Mtd.Kiosk.Annunciator.Realtime.UmbracoApi.csproj", "{608E938D-5B40-4651-8492-01E1370EF7DA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{7412A7CC-3423-4856-9007-D0C651C93BC3}"
+	ProjectSection(SolutionItems) = preProject
+		.github\dependabot.yml = .github\dependabot.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{A5D28BE2-718D-4AB7-AD29-F50D7A72DD82}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\build-test.yml = .github\workflows\build-test.yml
+		.github\workflows\codeql.yml = .github\workflows\codeql.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -52,6 +63,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{A5D28BE2-718D-4AB7-AD29-F50D7A72DD82} = {7412A7CC-3423-4856-9007-D0C651C93BC3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {ADE57155-2A9B-4DB5-88DD-9B003C8D8E87}
