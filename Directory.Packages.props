@@ -5,18 +5,27 @@
   <ItemGroup>
   </ItemGroup>
   <ItemGroup>
+    <PackageVersion Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.FileExtensions" Version="8.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.UserSecrets" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting.Systemd" Version="8.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Hosting.WindowsServices" Version="8.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Logging" Version="8.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Options" Version="8.0.2" />
+    <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
     <PackageVersion Include="Serilog" Version="3.1.1" />
     <PackageVersion Include="Serilog.Enrichers.AssemblyName" Version="1.0.9" />
     <PackageVersion Include="Serilog.Enrichers.Context" Version="4.6.5" />
     <PackageVersion Include="Serilog.Enrichers.Environment" Version="2.3.0" />
     <PackageVersion Include="Serilog.Enrichers.Process" Version="2.0.2" />
     <PackageVersion Include="Serilog.Enrichers.Thread" Version="3.1.0" />
+    <PackageVersion Include="Serilog.Extensions.Hosting" Version="8.0.0" />
     <PackageVersion Include="Serilog.Extensions.Logging" Version="8.0.0" />
     <PackageVersion Include="Serilog.Settings.Configuration" Version="8.0.0" />
     <PackageVersion Include="Serilog.Sinks.Console" Version="5.0.1" />
