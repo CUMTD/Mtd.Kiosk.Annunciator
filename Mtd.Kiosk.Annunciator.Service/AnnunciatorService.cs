@@ -1,21 +1,44 @@
 using System.Collections.Immutable;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Mtd.Kiosk.Annunciator.Core;
+using Mtd.Kiosk.Annunciator.Core.Config;
+using Mtd.Kiosk.Annunciator.Core.Models;
 
 namespace Mtd.Kiosk.Annunciator.Service;
 internal class AnnunciatorService : BackgroundService, IDisposable
 {
-	private readonly IReadOnlyCollection<IButtonReader> _readers;
-	private readonly ILogger<AnnunciatorService> _logger;
-	public AnnunciatorService(IEnumerable<IButtonReader> readers, ILogger<AnnunciatorService> logger)
-	{
-		ArgumentNullException.ThrowIfNull(nameof(readers));
-		_readers = readers.ToImmutableArray();
-		ArgumentOutOfRangeException.ThrowIfZero(_readers.Count, nameof(readers));
+	private bool currentlyAnnouncing = false;
 
-		ArgumentNullException.ThrowIfNull(nameof(logger));
+	private readonly KioskConfig _config;
+	private readonly IReadOnlyCollection<IButtonReader> _readers;
+	private readonly IKioskRealTimeClient _kioskRealTimeClient;
+	private readonly IAnnunciator _annunciator;
+	private readonly ILogger<AnnunciatorService> _logger;
+	public AnnunciatorService(
+		IOptions<KioskConfig> config,
+		IEnumerable<IButtonReader> readers,
+		IKioskRealTimeClient kioskRealTimeClient,
+		IAnnunciator annunciator,
+		ILogger<AnnunciatorService> logger
+	)
+	{
+		ArgumentNullException.ThrowIfNull(config.Value, nameof(config));
+		ArgumentException.ThrowIfNullOrWhiteSpace(config.Value.Name, nameof(config.Value.Name));
+		ArgumentException.ThrowIfNullOrWhiteSpace(config.Value.Id, nameof(config.Value.Id));
+		ArgumentNullException.ThrowIfNull(readers, nameof(readers));
+		ArgumentNullException.ThrowIfNull(kioskRealTimeClient, nameof(kioskRealTimeClient));
+		ArgumentNullException.ThrowIfNull(annunciator, nameof(annunciator));
+		ArgumentNullException.ThrowIfNull(logger, nameof(logger));
+
+		_config = config.Value;
+		_readers = readers.ToImmutableArray();
+		_kioskRealTimeClient = kioskRealTimeClient;
+		_annunciator = annunciator;
 		_logger = logger;
+
+		ArgumentOutOfRangeException.ThrowIfZero(_readers.Count, nameof(readers));
 	}
 
 	#region BackgroundService
@@ -72,7 +95,7 @@ internal class AnnunciatorService : BackgroundService, IDisposable
 	{
 		if (sender is IButtonReader reader)
 		{
-			ReaderButtonPressed(reader);
+			ReaderButtonPressed(reader, CancellationToken.None);
 		}
 		else if (sender is null)
 		{
@@ -86,10 +109,42 @@ internal class AnnunciatorService : BackgroundService, IDisposable
 		}
 	}
 
-	private void ReaderButtonPressed(IButtonReader reader)
+	private async void ReaderButtonPressed(IButtonReader reader, CancellationToken cancellationToken)
 	{
-		// Do the actual work of reading reading.
+		if (currentlyAnnouncing)
+		{
+			_logger.LogDebug("Already announcing. Ignoring button press.");
+			return;
+		}
+
 		_logger.LogInformation("{readerName} button pressed", reader.Name);
+
+		currentlyAnnouncing = true;
+
+		IReadOnlyCollection<Departure>? departures;
+		try
+		{
+			departures = await _kioskRealTimeClient.GetRealtime(_config.Id, cancellationToken);
+		}
+		catch (Exception ex)
+		{
+			_logger.LogError(ex, "Failed to fetch departures");
+			currentlyAnnouncing = false;
+			return;
+		}
+
+		_logger.LogDebug("Fetched {count} departures for {kioskId}", departures?.Count ?? -1, _config.Id);
+
+		try
+		{
+			await _annunciator.ReadDepartures(_config.Name, departures, cancellationToken);
+		}
+		catch (Exception ex)
+		{
+			_logger.LogError(ex, "Failed to announce departures");
+		}
+
+		currentlyAnnouncing = false;
 	}
 
 }

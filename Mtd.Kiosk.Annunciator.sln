@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mtd.Kiosk.Annunciator.Reade
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mtd.Kiosk.Annunciator.Service", "Mtd.Kiosk.Annunciator.Service\Mtd.Kiosk.Annunciator.Service.csproj", "{48EFDEA1-3057-47D0-9031-D83F8D373555}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mtd.Kiosk.Annunciator.Realtime.UmbracoApi", "Mtd.Kiosk.Annunciator.Realtime.UmbracoApi\Mtd.Kiosk.Annunciator.Realtime.UmbracoApi.csproj", "{608E938D-5B40-4651-8492-01E1370EF7DA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,6 +45,10 @@ Global
 		{48EFDEA1-3057-47D0-9031-D83F8D373555}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{48EFDEA1-3057-47D0-9031-D83F8D373555}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{48EFDEA1-3057-47D0-9031-D83F8D373555}.Release|Any CPU.Build.0 = Release|Any CPU
+		{608E938D-5B40-4651-8492-01E1370EF7DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{608E938D-5B40-4651-8492-01E1370EF7DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{608E938D-5B40-4651-8492-01E1370EF7DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{608E938D-5B40-4651-8492-01E1370EF7DA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,13 +1,17 @@
+using System.Reflection;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Mtd.Kiosk.Annunciator.Readers.Simple.Config;
+using Mtd.Kiosk.Annunciator.Azure;
+using Mtd.Kiosk.Annunciator.Azure.Config;
 using Mtd.Kiosk.Annunciator.Core;
+using Mtd.Kiosk.Annunciator.Core.Config;
 using Mtd.Kiosk.Annunciator.Readers.Simple;
-using Serilog;
-using Mtd.Kiosk.Annunciator.Service.Extensions;
+using Mtd.Kiosk.Annunciator.Readers.Simple.Config;
+using Mtd.Kiosk.Annunciator.Realtime.UmbracoApi;
 using Mtd.Kiosk.Annunciator.Service;
-using Microsoft.Extensions.Configuration;
-using System.Reflection;
+using Mtd.Kiosk.Annunciator.Service.Extensions;
+using Serilog;
 
 try
 {
@@ -42,13 +46,35 @@ try
 				.AddOptionsWithValidateOnStart<PressEveryNSecondsReaderConfig>(PressEveryNSecondsReaderConfig.ConfigSectionName)
 				.Bind(context.Configuration.GetSection(PressEveryNSecondsReaderConfig.ConfigSectionName));
 
-			// Readers
 			_ = services
-				.AddSingleton<IButtonReader, PressEveryNSecondsReader>();
+				.Configure<RealTimeClientConfig>(context.Configuration.GetSection(RealTimeClientConfig.ConfigSectionName))
+				.AddOptionsWithValidateOnStart<RealTimeClientConfig>(RealTimeClientConfig.ConfigSectionName)
+				.Bind(context.Configuration.GetSection(RealTimeClientConfig.ConfigSectionName));
+
+			_ = services
+				.Configure<KioskConfig>(context.Configuration.GetSection(KioskConfig.ConfigSectionName))
+				.AddOptionsWithValidateOnStart<KioskConfig>(KioskConfig.ConfigSectionName)
+				.Bind(context.Configuration.GetSection(KioskConfig.ConfigSectionName));
+
+			_ = services
+				.Configure<AzureAnnunciatorConfig>(context.Configuration.GetSection(AzureAnnunciatorConfig.ConfigSectionName))
+				.AddOptionsWithValidateOnStart<AzureAnnunciatorConfig>(AzureAnnunciatorConfig.ConfigSectionName)
+				.Bind(context.Configuration.GetSection(AzureAnnunciatorConfig.ConfigSectionName));
+
+			// Readers
+			_ = services.AddSingleton<IButtonReader, PressEveryNSecondsReader>();
+
+			// Clients
+			_ = services.AddHttpClient<IKioskRealTimeClient, UmbracoApiRealtimeClient>(client =>
+			{
+				client.DefaultRequestHeaders.Add("Accept", "application/json");
+			});
+
+			// Annunciators
+			_ = services.AddSingleton<IAnnunciator, AzureAnnunciator>();
 
 			// Services
-			_ = services
-				.AddHostedService<AnnunciatorService>();
+			_ = services.AddHostedService<AnnunciatorService>();
 
 		})
 		.UseSerilog((context, loggingConfig) =>
