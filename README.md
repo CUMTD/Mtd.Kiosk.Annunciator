@@ -1,6 +1,20 @@
 # Mtd.Kiosk.Annunciator
 
-## Mtd.Kiosk.Annunciator.Core
+This project contains the code for departure annunciation on MTD's StopWatch Kiosks.
+The service listens for button presses and, when a button is pressed, reads upcoming departures aloud.
+
+## Technologies
+
+* [.NET 8][net8]
+* [Azure Cognitive Services][speech-docs] - For Performing Text-to-Speech
+* [Serilog][serilog] - For Structured Logging
+* [SEQ][seq] - For Log Aggregation
+
+## Projects
+
+### Mtd.Kiosk.Annunciator.Core
+
+This project contains core, and generic code for the kiosk annunciator service.
 
 The service uses implementations of the `IButtonReader` interface to detect button presses.
 The `IButtonReader` defines a `Start()` and `Stop()` method and an event handler for when a button is pressed.
@@ -99,3 +113,69 @@ classDiagram
 		ReadDepartures(string stopName, IReadOnlyCollection<Departure>? departures, CancellationToken cancellationToken) Task
 	}
 ```
+
+### Mtd.Kiosk.Annunciator.Azure
+
+This project contains code that interfaces with Azure's Text-to-Speech service to read departures aloud.
+
+`Mtd.Kiosk.Annunciator.Azure` is an implementation of `IAnnunciator` that reads departures aloud using Azure's Text-to-Speech service.
+The Azure text-to-speech service is a part of the [`Microsoft.CognitiveServices.Speech`][nuget-speech] NuGet package.
+More information on the Azure text-to-speech service can be found in the [official documentation][speech-docs].
+
+```mermaid
+classDiagram 
+	
+    class IAnnunciator  {
+        <<interface>>
+        ReadDepartures(string stopName, IReadOnlyCollection<Departure>? departures, CancellationToken cancellationToken) Task
+    }
+
+	class AzureAnnunciator  {
+        + AzureAnnunciator(IOptions~AzureAnnunciatorConfig~ config, ILogger~AzureAnnunciator~ logger)
+		+ ReadDepartures(string stopName, IReadOnlyCollection<Departure>? departures, CancellationToken cancellationToken) Task
+		+ ReadError() Task
+        - ILogger~AzureAnnunciator~ _logger 
+		- SpeechSynthesizer _synth 
+		- ReadLine(string text) Task
+		- GenerateSsml(string text) string
+	}
+	class AzureAnnunciatorConfig  {
+		+string ConfigSectionName 
+		+ SubscriptionKey : string
+		+ ServiceRegion : string
+	}
+	
+    
+
+	AzureAnnunciator --|> IAnnunciator
+    AzureAnnunciator --* AzureAnnunciatorConfig	
+```
+
+### Mtd.Kiosk.Annunciator.Readers.Simple
+
+This project contains simple implementations of the `IButtonReader` interface.
+These are mostly meant for testing and example purposes.
+This is a good place to start if building a new implementation.
+
+### Mtd.Kiosk.Annunciator.Realtime.UmbracoApi
+
+This project contains an implementation of `IKioskRealTimeClient` that interfaces with the
+Umbraco API that powers the kiosk data.
+
+### Mtd.Kiosk.Annunciator.Service
+
+This project contains `Program.cs`, the entry point for the application.
+It runs as either a Windows Service or as a Linux Daemon.
+It configures the application and starts the `AnnunciatorService` class.
+`AnnunciatorService` is a `BackgroundService` that listens for button presses,
+fetches the latest departure information, and reads the departures aloud.
+
+```mermaid
+
+```
+
+[nuget-speech]: https://www.nuget.org/packages/Microsoft.CognitiveServices.Speech
+[speech-docs]: https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/overview
+[net8]: https://learn.microsoft.com/en-us/dotnet/core/introduction
+[serilog]: https://serilog.net/
+[seq]: https://datalust.co/seq
