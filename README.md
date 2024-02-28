@@ -1,5 +1,8 @@
 # Mtd.Kiosk.Annunciator
 
+[![.NET Build](https://github.com/CUMTD/Mtd.Kiosk.Annunciator/actions/workflows/build-test.yml/badge.svg)](https://github.com/CUMTD/Mtd.Kiosk.Annunciator/actions/workflows/build-test.yml)
+[![CodeQL](https://github.com/CUMTD/Mtd.Kiosk.Annunciator/actions/workflows/codeql.yml/badge.svg)](https://github.com/CUMTD/Mtd.Kiosk.Annunciator/actions/workflows/codeql.yml)
+
 This project contains the code for departure annunciation on MTD's StopWatch Kiosks.
 The service listens for button presses and, when a button is pressed, reads upcoming departures aloud.
 
