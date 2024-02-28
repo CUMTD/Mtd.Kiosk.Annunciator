@@ -170,7 +170,74 @@ It configures the application and starts the `AnnunciatorService` class.
 `AnnunciatorService` is a `BackgroundService` that listens for button presses,
 fetches the latest departure information, and reads the departures aloud.
 
+A simplified sequence diagram of the `AnnunciatorService` and the application flow is shown below.
+
 ```mermaid
+sequenceDiagram
+    actor U as User
+    participant READ as IButtonReader (BackgroundButtonReader)
+    participant SER as AnnunciatorService
+    participant RT as IKioskRealTimeClient
+    participant ANN as IAnnunciator
+
+    activate SER
+    SER ->> SER: Startup
+    SER -->> READ: Start in New Process using BackgroundWorker
+    activate READ
+    SER -->> READ: Subscribe to ButtonPressed event handler
+    loop Each Button Press
+    Note over READ: Detect Button Press using DetectButtonPress method
+    U ->> READ: Presses
+    READ ->> SER: Raise ButtonPressed event
+
+    SER -->> RT: Fetch Departures
+    activate RT
+    RT -->> RT: Fetch departures from server
+    RT -->> SER: departures
+    deactivate RT
+
+    SER -->> ANN: ReadDepartures
+    activate ANN
+    ANN -->> ANN: Convert departure to audio
+    ANN ->> ANN: Output audio through system audio device
+    ANN -->> SER: 
+    deactivate ANN
+
+    end
+
+    deactivate READ
+    deactivate SER
+```
+
+In addition to listening for button presses, the applicaiton also sends heartbeats to the central server
+on a periodic basis to report on the health of the service.
+
+## Development
+
+To load the project, you need to add the following values to a user-secrets file or as environment variables.
+
+```json
+{
+  "AzureAnnunciator": {
+    "SubscriptionKey": "Your Subscription ID",
+    "ServiceRegion": "Your Region"
+  },
+  "Kiosk": {
+    "Id": "The Kiosk GUID to Associate With",
+    "Name": "Kiosk Name to Read"
+  },
+  "Serilog": {
+    "WriteTo": [
+    {
+      "Name": "Seq",
+      "Args": {
+        "ServerUrl": "SEQ Server URL"
+        "ApiKey": "SEQ API Key"
+      }
+      }
+    ]
+  }
+}
 
 ```
 
