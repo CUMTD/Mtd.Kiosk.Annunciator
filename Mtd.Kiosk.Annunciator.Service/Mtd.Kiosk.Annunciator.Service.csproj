@@ -42,7 +42,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\Mtd.Kiosk.Annunciator.Azure\Mtd.Kiosk.Annunciator.Azure.csproj" />
 		<ProjectReference Include="..\Mtd.Kiosk.Annunciator.Core\Mtd.Kiosk.Annunciator.Core.csproj" />
-		<ProjectReference Include="..\Mtd.Kiosk.Annunciator.Readers.Simple\Mtd.Kiosk.Annunciator.Readers.Simple.csproj" />
+		<ProjectReference Include="..\Mtd.Kiosk.Annunciator.Readers.Raspi\Mtd.Kiosk.Annunciator.Readers.Raspi.csproj" />
 		<ProjectReference Include="..\Mtd.Kiosk.Annunciator.Realtime.UmbracoApi\Mtd.Kiosk.Annunciator.Realtime.UmbracoApi.csproj" />
 	</ItemGroup>
 

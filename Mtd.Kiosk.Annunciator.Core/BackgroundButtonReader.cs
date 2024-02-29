@@ -27,7 +27,7 @@ public abstract class BackgroundButtonReader : IButtonReader, IDisposable
 	// This is where the button detecting logic should go.
 	// The derived class should implement this method and return true if the button is pressed.
 	// The method will be awaited in a loop in the BackgroundWorker_DoWork method each time it returns.
-	public abstract Task<bool> DetectButtonPress();
+	public abstract Task<bool> DetectButtonPress(CancellationToken cancellationToken);
 
 	#region IButtonReader
 	public abstract string Name { get; }
@@ -70,11 +70,13 @@ public abstract class BackgroundButtonReader : IButtonReader, IDisposable
 			_logger.LogError("BackgroundWorker is null");
 			return;
 		}
+		using var cancellationTokenSource = new CancellationTokenSource();
+		cancellationTokenSource.Token.Register(() => bgWorker.CancelAsync());
 
 		// Run the DetectButtonPress method in a loop until the BackgroundWorker is canceled
 		while (!bgWorker.CancellationPending)
 		{
-			var pressed = await DetectButtonPress();
+			var pressed = await DetectButtonPress(cancellationTokenSource.Token);
 			if (pressed)
 			{
 				ButtonPressed?.Invoke(this, EventArgs.Empty);
