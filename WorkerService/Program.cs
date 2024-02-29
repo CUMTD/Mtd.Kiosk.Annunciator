@@ -41,6 +41,8 @@ namespace KioskAnnunciatorButton.WorkerService
 					.SetBasePath(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location))
 					.AddJsonFile("appsettings.json", false, true)
 					.AddJsonFile($"appsettings.{ctx.HostingEnvironment.EnvironmentName}.json", true, true);
+
+				config.AddEnvironmentVariables("KIOSK_ANNUNCIATOR_");
 			})
 			.ConfigureServices((hostContext, services) =>
 			{
