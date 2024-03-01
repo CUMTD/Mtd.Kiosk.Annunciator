@@ -62,6 +62,7 @@ if (disposedValue || _controller is null)
     {
         for (var pin = 0; pin < _gpioPins.Length; pin++)
         {
+            _logger.LogDebug("Closing pin {pin}", _gpioPins[pin]);
             _controller?.UnregisterCallbackForPinValueChangedEvent(_gpioPins[pin], Callback);
             _controller?.ClosePin(_gpioPins[pin]);
         }
