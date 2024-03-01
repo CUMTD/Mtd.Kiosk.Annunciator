@@ -71,6 +71,7 @@ public abstract class BackgroundButtonReader : IButtonReader, IDisposable
 			return;
 		}
 		using var cancellationTokenSource = new CancellationTokenSource();
+		_logger.LogDebug("Button {changeType} on pin {pin}", args.ChangeType, args.PinNumber);
 		cancellationTokenSource.Token.Register(() => bgWorker.CancelAsync());
 
 		// Run the DetectButtonPress method in a loop until the BackgroundWorker is canceled
