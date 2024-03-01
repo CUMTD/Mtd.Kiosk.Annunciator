@@ -36,7 +36,9 @@ jobs:
         with:
           dotnet-version: '8.0.x' # SDK Version to use.
       - name: Set VERSION variable from tag
-        run: echo "VERSION=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_ENV
+        run: |
+          echo "VERSION=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_ENV
+          echo $VERSION
 
       # Restore Nuget Packages, Build, And Publish
       # This will create a release in dist/<rid>/
@@ -53,6 +55,5 @@ jobs:
           generate_release_notes: true
           draft: false
           prerelease: false
-          fail_on_unmatched_files: false
-          files: |
-            $ZIPNAME
+          fail_on_unmatched_files: true
+          files: ./$ZIPNAME
