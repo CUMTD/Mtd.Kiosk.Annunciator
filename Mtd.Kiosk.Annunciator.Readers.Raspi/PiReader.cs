@@ -55,7 +55,7 @@ if (disposedValue || _controller is null)
             _logger.LogDebug("Opening pin {pin}", _gpioPins[pin]);
             _controller.OpenPin(_gpioPins[pin], PinMode.InputPullUp);
             Thread.Sleep(500); // prevent a button press on pin open
-            _controller?.RegisterCallbackForPinValueChangedEvent(_gpioPins[pin], PinEventTypes.Rising | PinEventTypes.Falling, Callback);
+            _controller.RegisterCallbackForPinValueChangedEvent(_gpioPins[pin], PinEventTypes.Rising | PinEventTypes.Falling, Callback);
         }
     }
     public void Stop()
