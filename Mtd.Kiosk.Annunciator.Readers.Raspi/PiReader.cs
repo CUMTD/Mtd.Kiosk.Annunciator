@@ -9,6 +9,8 @@ namespace Mtd.Kiosk.Annunciator.Readers.Raspi;
 
 public sealed class PiReader : ButtonReader, IButtonReader, IDisposable
 {
+	public const string KEY = "RASPI";
+
 	private readonly ImmutableArray<int> _gpioPins;
 
 	private bool disposedValue;

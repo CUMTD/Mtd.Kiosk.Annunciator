@@ -7,4 +7,5 @@ public class PressEveryNSecondsReaderConfig
 
 	[Required, Range(1, int.MaxValue)]
 	public int Seconds { get; set; }
+	public bool Enabled { get; set; }
 }

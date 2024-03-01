@@ -8,6 +8,7 @@ namespace Mtd.Kiosk.Annunciator.Readers.Simple;
 
 public sealed class PressEveryNSecondsReader : ButtonReader, IButtonReader
 {
+	public const string KEY = "EVERY_N";
 	public override string Name => "Press Every N Seconds Reader";
 
 	private readonly TimeSpan _interval;
