@@ -41,10 +41,10 @@ jobs:
       # This will create a release in dist/<rid>/
       # example: dist/linux-x64
       - name: Create the package
-        run: dotnet publish $PUB_PROJ -p:Version=$VERSION -p:PackageVersion=$VERSION -p:Copyright="$COPYRIGHT" -p:PackageRequireLicenseAcceptance=false -p:PackageLicenseExpression="$LICENSE" -p:PackageIcon="$ICON" -p:PackageReadmeFile="$README" -p:RepositoryUrl="$REPO" -p:RepositoryType=git -p:Description="$DESCRIPTION" -p:IncludeSymbols=true -p:SymbolPackageFormat=snupkg --configuration Release --output $OUTPUT
+        run: dotnet publish $PUB_PROJ --runtime $RID -p:Version=$VERSION -p:PackageVersion=$VERSION -p:Copyright="$COPYRIGHT" -p:PackageRequireLicenseAcceptance=false -p:PackageLicenseExpression="$LICENSE" -p:PackageIcon="$ICON" -p:PackageReadmeFile="$README" -p:RepositoryUrl="$REPO" -p:RepositoryType=git -p:Description="$DESCRIPTION" -p:IncludeSymbols=true -p:SymbolPackageFormat=snupkg --configuration Release --output $OUTDIR
 
       - name: Zip Package
-        run: zip -r $OUTPUT/$RID.zip $OUTDIR
+        run: zip -j -r $OUTPUT/$RID.zip $OUTDIR/*
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
