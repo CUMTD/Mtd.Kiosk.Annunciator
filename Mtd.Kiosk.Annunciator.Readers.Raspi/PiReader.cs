@@ -39,6 +39,7 @@ public sealed class PiReader : IButtonReader, IDisposable
 
     private void Callback(object sender, PinValueChangedEventArgs args)
     {
+		_logger.LogDebug("Button {changeType} on pin {pin}", args.ChangeType, args.PinNumber);
         ButtonPressed?.Invoke(this, EventArgs.Empty);
     }
 
