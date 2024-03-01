@@ -19,7 +19,7 @@ public sealed class PressEveryNSecondsReader : BackgroundButtonReader, IButtonRe
 		_interval = TimeSpan.FromSeconds(options.Value.Seconds);
 	}
 
-	public async override Task<bool> DetectButtonPress(CancellationToken cancellationToken)
+	public async override Task<bool> DetectButtonPress()
 	{
 		await Task.Delay(_interval);
 		return true;
