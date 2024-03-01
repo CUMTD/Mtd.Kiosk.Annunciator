@@ -8,5 +8,4 @@ public class PiReaderConfig
     [Required]
     public required int[] Pins { get; set; }
 
-    public required string[] Foo { get; set; }
 }
