@@ -2,8 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+	  <AnalysisLevel>latest</AnalysisLevel>
+	  <ImplicitUsings>enable</ImplicitUsings>
+	  <Nullable>enable</Nullable>
+	  <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+	  <PublishSingleFile>true</PublishSingleFile>
+	  <PackageId>Mtd.Kiosk.Annunciator.Realtime.UmbracoApi</PackageId>
   </PropertyGroup>
 
   <ItemGroup>

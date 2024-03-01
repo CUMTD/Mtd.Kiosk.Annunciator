@@ -5,6 +5,7 @@
 ## Get latest from https://github.com/github/gitignore/blob/main/VisualStudio.gitignore
 **/secrets.json
 nupkgs/
+dist/
 
 # User-specific files
 *.rsuser

@@ -6,6 +6,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<PackageId>Mtd.Kiosk.Annunciator.Readers.Simple</PackageId>
 	</PropertyGroup>
 
 	<ItemGroup>
