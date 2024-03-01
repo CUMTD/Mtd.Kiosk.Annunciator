@@ -38,7 +38,6 @@ jobs:
       - name: Set VERSION variable from tag
         run: |
           echo "VERSION=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_ENV
-          echo $VERSION
 
       # Restore Nuget Packages, Build, And Publish
       # This will create a release in dist/<rid>/
@@ -56,4 +55,4 @@ jobs:
           draft: false
           prerelease: false
           fail_on_unmatched_files: true
-          files: ./$ZIPNAME
+          files: "**/*.zip"
