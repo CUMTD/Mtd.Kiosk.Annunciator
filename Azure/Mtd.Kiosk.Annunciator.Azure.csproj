@@ -15,7 +15,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Mtd.Kiosk.Annunciator.Core\Mtd.Kiosk.Annunciator.Core.csproj" />
+	  <ProjectReference Include="..\Core\Mtd.Kiosk.Annunciator.Core.csproj" />
 	</ItemGroup>
 
 </Project>
