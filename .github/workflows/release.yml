@@ -19,7 +19,7 @@ env:
   OUTPUT: 'dist'
 
 jobs:
-  build-pack:
+  build-pub:
     runs-on: ubuntu-latest
     permissions:
       contents: write
