@@ -1,4 +1,5 @@
 # Mtd.Kiosk.Annunciator
+
 [![.NET Build](https://github.com/CUMTD/Mtd.Kiosk.Annunciator/actions/workflows/build-test.yml/badge.svg)](https://github.com/CUMTD/Mtd.Kiosk.Annunciator/actions/workflows/build-test.yml)
 [![CodeQL](https://github.com/CUMTD/Mtd.Kiosk.Annunciator/actions/workflows/codeql.yml/badge.svg)](https://github.com/CUMTD/Mtd.Kiosk.Annunciator/actions/workflows/codeql.yml)
 
@@ -257,6 +258,7 @@ To load the project, you need to add the following values to a user-secrets file
 
 ```
 ### Linux example:
+
 ```bash
 export Mtd_Kiosk_Annunciator_Service_AzureAnnunciator__SubscriptionKey="{subscription key}"
 export Mtd_Kiosk_Annunciator_Service_AzureAnnunciator__ServiceRegion="eastus"
@@ -274,3 +276,13 @@ export Mtd_Kiosk_Annunciator_Service_AzureAnnunciator__SpeakerOutputDevice="sysd
 [net8]: https://learn.microsoft.com/en-us/dotnet/core/introduction
 [serilog]: https://serilog.net/
 [seq]: https://datalust.co/seq
+
+
+## Creating A Release
+
+To create a release, you need to create a tag and push it to the repository.
+
+```bash
+git tag -a v1.0.0 -m "Release 1.0.0"
+git push --tags
+```
