@@ -46,7 +46,7 @@ jobs:
         run: dotnet publish $PUB_PROJ --runtime $RID -p:Version=$VERSION -p:PackageVersion=$VERSION -p:Copyright="$COPYRIGHT" -p:PackageRequireLicenseAcceptance=false -p:PackageLicenseExpression="$LICENSE" -p:PackageIcon="$ICON" -p:PackageReadmeFile="$README" -p:RepositoryUrl="$REPO" -p:RepositoryType=git -p:Description="$DESCRIPTION" -p:IncludeSymbols=true -p:SymbolPackageFormat=snupkg --configuration Release --output $OUTDIR
 
       - name: Zip Package
-        run: zip -jr "$ZIPNAME" "./$OUTDIR/"
+        run: zip -jr $ZIPNAME ./$OUTDIR/
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
