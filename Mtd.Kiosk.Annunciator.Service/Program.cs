@@ -1,13 +1,17 @@
 using System.Reflection;
+using System.Runtime.InteropServices;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using Mtd.Kiosk.Annunciator.Azure;
 using Mtd.Kiosk.Annunciator.Azure.Config;
 using Mtd.Kiosk.Annunciator.Core;
 using Mtd.Kiosk.Annunciator.Core.Config;
 using Mtd.Kiosk.Annunciator.Readers.Raspi;
 using Mtd.Kiosk.Annunciator.Readers.Raspi.Config;
+using Mtd.Kiosk.Annunciator.Readers.Simple;
+using Mtd.Kiosk.Annunciator.Readers.Simple.Config;
 using Mtd.Kiosk.Annunciator.Realtime.UmbracoApi;
 using Mtd.Kiosk.Annunciator.Service;
 using Mtd.Kiosk.Annunciator.Service.Extensions;
@@ -47,6 +51,11 @@ try
 				.Bind(context.Configuration.GetSection(PiReaderConfig.ConfigSectionName));
 
 			_ = services
+				.Configure<PressEveryNSecondsReaderConfig>(context.Configuration.GetSection(PressEveryNSecondsReaderConfig.ConfigSectionName))
+				.AddOptionsWithValidateOnStart<PressEveryNSecondsReaderConfig>(PressEveryNSecondsReaderConfig.ConfigSectionName)
+				.Bind(context.Configuration.GetSection(PressEveryNSecondsReaderConfig.ConfigSectionName));
+
+			_ = services
 				.Configure<RealTimeClientConfig>(context.Configuration.GetSection(RealTimeClientConfig.ConfigSectionName))
 				.AddOptionsWithValidateOnStart<RealTimeClientConfig>(RealTimeClientConfig.ConfigSectionName)
 				.Bind(context.Configuration.GetSection(RealTimeClientConfig.ConfigSectionName));
@@ -62,7 +71,36 @@ try
 				.Bind(context.Configuration.GetSection(AzureAnnunciatorConfig.ConfigSectionName));
 
 			// Readers
-			_ = services.AddSingleton<IButtonReader, PiReader>();
+			_ = services.AddKeyedSingleton<IButtonReader, PiReader>(PiReader.KEY);
+			_ = services.AddKeyedSingleton<IButtonReader, PressEveryNSecondsReader>(PressEveryNSecondsReader.KEY);
+
+			_ = services.AddSingleton<IEnumerable<IButtonReader>>(serviceProvider =>
+			{
+				var env = serviceProvider.GetRequiredService<IHostEnvironment>();
+				var providers = new List<IButtonReader>();
+
+
+
+				// The PiReader Only Works on Linux
+				if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+				{
+					var piReaderConfig = serviceProvider.GetRequiredService<IOptions<PiReaderConfig>>().Value;
+					if (piReaderConfig.Enabled)
+					{
+						providers.Add(serviceProvider.GetRequiredKeyedService<IButtonReader>(PiReader.KEY));
+					}
+				}
+
+				// The PressEveryNSecondsReader can be enabled/disabled in the config.
+				var everyNConfig = serviceProvider.GetRequiredService<IOptions<PressEveryNSecondsReaderConfig>>().Value;
+				if (everyNConfig.Enabled)
+				{
+					providers.Add(serviceProvider.GetRequiredKeyedService<IButtonReader>(PressEveryNSecondsReader.KEY));
+				}
+
+				return providers;
+			});
+
 
 			// Clients
 			_ = services.AddHttpClient<IKioskRealTimeClient, UmbracoApiRealtimeClient>(client =>

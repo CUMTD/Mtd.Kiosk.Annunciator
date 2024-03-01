@@ -19,41 +19,31 @@ The service listens for button presses and, when a button is pressed, reads upco
 This project contains core, and generic code for the kiosk annunciator service.
 
 The service uses implementations of the `IButtonReader` interface to detect button presses.
-The `IButtonReader` defines a `Start()` and `Stop()` method and an event handler for when a button is pressed.
+The `IButtonReader` defines a `Start()` and `Stop()` method and a `ReadButtonPressed` method for when
+a button is pressed.
 
-`BackgroundButtonReader` is an abstract implementation of `IButtonReader` that
-uses a `BackgroundWorker` execute the code that detects button presses in the background.
-
-Implementations if `IButtonReader` that wish to inherit from `BackgroundButtonReader`
-should implement their detection code in the `DetectButtonPress()` method.
-This method should return true when the button is pressed.
-The `BackgroundButtonReader` will raise the `ButtonPressed` event when the button is pressed and
-call `DetectButtonPress()` in a loop until the `CancelPending` property is set to true.
+Implementations if `IButtonReader` that wish to inherit from `ButtonReader`
+should implement their detection code in the to set the `_buttonPressPending` property to true
+when a press is detected.
 
 Implementations of `IButtonReader` are consumed byt the `Mtd.Kiosk.Annunciator.Service.AnnunciatorService`
 class for the purpose of detecting button presses.
 
 ```mermaid
 classDiagram 
-	
-	class BackgroundButtonReader  {
+	class ButtonReader  {
 		<<Abstract>>
+		- _buttonPressPending: bool
+		# _logger: ILogger~ButtonReader~
+		# ButtonPressPending: bool
 		+ Name : string*
-		# ButtonPressed : EventHandler?
-		# CancelPending : bool
-		- BackgroundWorker? _worker
-		- bool _isBackgroundWorkerCurrentlyRunning 
-		- bool _isDisposed 
-		- ILogger~BackgroundButtonReader~ _logger 
-		+ DetectButtonPress() Task~bool~
-		+ Start() void
-		+ Stop() void
-		+ Dispose() void
-		- BackgroundWorker_DoWork(object? sender, DoWorkEventArgs e) void
-		- CreateWorker() BackgroundWorker
-		- Dispose(bool disposing) void
+		# ButtonReader(ILogger~ButtonReader~ logger)
+		+ ReadButtonPressed(bool peek) bool
+		+ Start()*
+		+ Stop()*
+		+ Dispose()*
 	}
-		
+	
 	class IButtonReader  {
 		<<Interface>>
 		Name : string
@@ -66,9 +56,9 @@ classDiagram
 		<<Interface>>
 		Dispose() void
 	}
-	
-	BackgroundButtonReader --|> IButtonReader
-	BackgroundButtonReader --|> IDisposable
+
+	ButtonReader --|> IButtonReader
+	ButtonReader --|> IDisposable
 ```
 
 The `Departure` object is a simple DTO that represents a departure from a stop.
@@ -153,6 +143,10 @@ classDiagram
     AzureAnnunciator --* AzureAnnunciatorConfig	
 ```
 
+### Mtd.Kiosk.Annunciator.Readers.Raspi
+
+This project contains an implementation of `IButtonReader` that interfaces with the Raspberry Pi's GPIO pins.
+
 ### Mtd.Kiosk.Annunciator.Readers.Simple
 
 This project contains simple implementations of the `IButtonReader` interface.
@@ -176,36 +170,56 @@ A simplified sequence diagram of the `AnnunciatorService` and the application fl
 
 ```mermaid
 sequenceDiagram
+
     actor U as User
-    participant READ as IButtonReader (BackgroundButtonReader)
+    participant READ as IButtonReader (ButtonReader)
     participant SER as AnnunciatorService
     participant RT as IKioskRealTimeClient
-    participant ANN as IAnnunciator
-
+    participant ANN as IAnnunciator (AzureAnnunciator)
+    participant AZ as Azure
+    participant SYS as System
+    
     activate SER
     SER ->> SER: Startup
-    SER -->> READ: Start in New Process using BackgroundWorker
+    loop Each Reader
+    SER ->> READ: Start()
     activate READ
-    SER -->> READ: Subscribe to ButtonPressed event handler
-    loop Each Button Press
-    Note over READ: Detect Button Press using DetectButtonPress method
-    U ->> READ: Presses
-    READ ->> SER: Raise ButtonPressed event
+    end
 
-    SER -->> RT: Fetch Departures
+    loop Listen For Button Press
+    READ ->> READ: Listen for Button Press
+    note over READ: Sets _buttonPressPending on press
+    end
+
+    loop Every 100 MS
+    SER ->> READ: ReadButtonPressed()
+    READ ->> SER: true/false
+
+    opt IsPressed
+    SER -->> RT: GetRealtime()
     activate RT
-    RT -->> RT: Fetch departures from server
-    RT -->> SER: departures
+    RT -->> SER: IReadOnlyCollection<Departure>
     deactivate RT
 
-    SER -->> ANN: ReadDepartures
+    SER -->> ANN: Announce(departures)
     activate ANN
-    ANN -->> ANN: Convert departure to audio
-    ANN ->> ANN: Output audio through system audio device
+    loop Each Departure
+    ANN -->> AZ: Synthesise Speech
+    activate AZ
+    AZ -->> ANN: Audio
+    deactivate AZ
+    ANN -->> SYS: Play Audio
+    SYS -->> ANN: 
+    activate SYS
+    deactivate SYS
+    end
     ANN -->> SER: 
     deactivate ANN
 
     end
+    end
+
+
 
     deactivate READ
     deactivate SER

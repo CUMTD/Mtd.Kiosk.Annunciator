@@ -45,13 +45,14 @@ internal class AnnunciatorService : BackgroundService, IDisposable
 
 	protected async override Task ExecuteAsync(CancellationToken stoppingToken)
 	{
-		// This doesn't actually need to run
-		// Since the workers get started in the StartAsync method and run in a differnt thread
-		// Still useful as a heartbeat.
 		while (!stoppingToken.IsCancellationRequested)
 		{
-			_logger.LogInformation("{serviceName} is running", nameof(AnnunciatorService));
-			await Task.Delay(60_000, stoppingToken);
+			var pressedReaders = _readers.Where(r => r.ReadButtonPressed());
+			foreach (var reader in pressedReaders)
+			{
+				ReaderButtonPressed(reader, stoppingToken);
+			}
+			await Task.Delay(100, stoppingToken);
 		}
 		await StopAsync(CancellationToken.None);
 	}
@@ -60,10 +61,6 @@ internal class AnnunciatorService : BackgroundService, IDisposable
 	{
 		foreach (var reader in _readers)
 		{
-			_logger.LogDebug("{readerName} event handler registered", reader.Name);
-			// This will be called regardless of which reader is pressed
-			reader.ButtonPressed += ReaderButtonPressed;
-
 			// Will start the BG worker.
 			reader.Start();
 		}
@@ -77,9 +74,6 @@ internal class AnnunciatorService : BackgroundService, IDisposable
 	{
 		foreach (var reader in _readers)
 		{
-			_logger.LogTrace("{readerName} event handler unregistered", reader.Name);
-			reader.ButtonPressed -= ReaderButtonPressed;
-
 			// Stop the BG worker
 			reader.Stop();
 		}
@@ -90,24 +84,6 @@ internal class AnnunciatorService : BackgroundService, IDisposable
 	}
 
 	#endregion BackgroundService
-
-	private void ReaderButtonPressed(object? sender, EventArgs e)
-	{
-		if (sender is IButtonReader reader)
-		{
-			ReaderButtonPressed(reader, CancellationToken.None);
-		}
-		else if (sender is null)
-		{
-			// This should never happen.
-			_logger.LogError("Sender is null.");
-		}
-		else
-		{
-			// This should never happen.
-			_logger.LogError("Unknown sender type: {type}", sender.GetType().Name);
-		}
-	}
 
 	private async void ReaderButtonPressed(IButtonReader reader, CancellationToken cancellationToken)
 	{
