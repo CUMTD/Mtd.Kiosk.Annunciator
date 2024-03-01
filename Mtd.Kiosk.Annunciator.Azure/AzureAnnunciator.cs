@@ -1,5 +1,6 @@
 using System.Text;
 using Microsoft.CognitiveServices.Speech;
+using Microsoft.CognitiveServices.Speech.Audio;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Mtd.Kiosk.Annunciator.Azure.Config;
@@ -20,7 +21,15 @@ public class AzureAnnunciator : IAnnunciator
 		ArgumentNullException.ThrowIfNull(logger, nameof(logger));
 
 		var speechConfig = SpeechConfig.FromSubscription(config.Value.SubscriptionKey, config.Value.ServiceRegion);
-		_synth = new SpeechSynthesizer(speechConfig);
+		if (config.Value.SpeakerOutputDevice == null)
+		{
+			// use default output device if none specified
+			_synth = new SpeechSynthesizer(speechConfig, AudioConfig.FromDefaultSpeakerOutput());
+		}
+		else
+		{
+			_synth = new SpeechSynthesizer(speechConfig, AudioConfig.FromSpeakerOutput(config.Value.SpeakerOutputDevice));
+		}
 
 		_logger = logger;
 	}

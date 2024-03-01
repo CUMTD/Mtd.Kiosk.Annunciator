@@ -6,8 +6,8 @@ using Mtd.Kiosk.Annunciator.Azure;
 using Mtd.Kiosk.Annunciator.Azure.Config;
 using Mtd.Kiosk.Annunciator.Core;
 using Mtd.Kiosk.Annunciator.Core.Config;
-using Mtd.Kiosk.Annunciator.Readers.Simple;
-using Mtd.Kiosk.Annunciator.Readers.Simple.Config;
+using Mtd.Kiosk.Annunciator.Readers.Raspi;
+using Mtd.Kiosk.Annunciator.Readers.Raspi.Config;
 using Mtd.Kiosk.Annunciator.Realtime.UmbracoApi;
 using Mtd.Kiosk.Annunciator.Service;
 using Mtd.Kiosk.Annunciator.Service.Extensions;
@@ -24,7 +24,7 @@ try
 				.SetBasePath(basePath)
 				.AddJsonFile("appsettings.json", true, true)
 				.AddJsonFile($"appsettings.{context.HostingEnvironment.EnvironmentName}.json", true, true)
-				.AddEnvironmentVariables("Mtd.Kiosk.Annunciator.Service_");
+				.AddEnvironmentVariables("Mtd_Kiosk_Annunciator_Service_");
 
 			if (context.HostingEnvironment.IsDevelopment())
 			{
@@ -42,9 +42,9 @@ try
 
 			// Options
 			_ = services
-				.Configure<PressEveryNSecondsReaderConfig>(context.Configuration.GetSection(PressEveryNSecondsReaderConfig.ConfigSectionName))
-				.AddOptionsWithValidateOnStart<PressEveryNSecondsReaderConfig>(PressEveryNSecondsReaderConfig.ConfigSectionName)
-				.Bind(context.Configuration.GetSection(PressEveryNSecondsReaderConfig.ConfigSectionName));
+				.Configure<PiReaderConfig>(context.Configuration.GetSection(PiReaderConfig.ConfigSectionName))
+				.AddOptionsWithValidateOnStart<PiReaderConfig>(PiReaderConfig.ConfigSectionName)
+				.Bind(context.Configuration.GetSection(PiReaderConfig.ConfigSectionName));
 
 			_ = services
 				.Configure<RealTimeClientConfig>(context.Configuration.GetSection(RealTimeClientConfig.ConfigSectionName))
@@ -62,7 +62,7 @@ try
 				.Bind(context.Configuration.GetSection(AzureAnnunciatorConfig.ConfigSectionName));
 
 			// Readers
-			_ = services.AddSingleton<IButtonReader, PressEveryNSecondsReader>();
+			_ = services.AddSingleton<IButtonReader, PiReader>();
 
 			// Clients
 			_ = services.AddHttpClient<IKioskRealTimeClient, UmbracoApiRealtimeClient>(client =>
