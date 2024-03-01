@@ -23,7 +23,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mtd.Kiosk.Annunciator.Servi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mtd.Kiosk.Annunciator.Realtime.UmbracoApi", "Realtime\UmbracoApi\Mtd.Kiosk.Annunciator.Realtime.UmbracoApi.csproj", "{608E938D-5B40-4651-8492-01E1370EF7DA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mtd.Kiosk.Annunciator.Readers.Raspi", "Readers\Raspi\Mtd.Kiosk.Annunciator.Readers.Raspi.csproj", "{7A4F8083-2002-4E5B-882B-90B59319265C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mtd.Kiosk.Annunciator.Readers.Raspi", "Readers\Raspi\Mtd.Kiosk.Annunciator.Readers.Raspi.csproj", "{7A4F8083-2002-4E5B-882B-90B59319265C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{7412A7CC-3423-4856-9007-D0C651C93BC3}"
 	ProjectSection(SolutionItems) = preProject
@@ -34,6 +34,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 	ProjectSection(SolutionItems) = preProject
 		.github\workflows\build-test.yml = .github\workflows\build-test.yml
 		.github\workflows\codeql.yml = .github\workflows\codeql.yml
+		.github\workflows\release.yml = .github\workflows\release.yml
 	EndProjectSection
 EndProject
 Global
