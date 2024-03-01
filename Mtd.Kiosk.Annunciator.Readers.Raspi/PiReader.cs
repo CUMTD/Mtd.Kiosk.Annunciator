@@ -44,6 +44,11 @@ public sealed class PiReader : IButtonReader, IDisposable
 
     public void Start()
     {
+if (disposedValue || _controller is null)
+{
+	throw new Exception("Object is disposed or controller is null. Cannot start.");
+}
+
         for (var pin = 0; pin < _gpioPins.Length; pin++)
         {
             _logger.LogDebug("Opening pin {pin}", _gpioPins[pin]);
