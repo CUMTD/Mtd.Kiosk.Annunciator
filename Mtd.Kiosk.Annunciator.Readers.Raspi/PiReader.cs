@@ -39,23 +39,30 @@ public sealed class PiReader : IButtonReader, IDisposable
 
     private void Callback(object sender, PinValueChangedEventArgs args)
     {
+		_logger.LogDebug("Button {changeType} on pin {pin}", args.ChangeType, args.PinNumber);
         ButtonPressed?.Invoke(this, EventArgs.Empty);
     }
 
     public void Start()
     {
+if (disposedValue || _controller is null)
+{
+	throw new Exception("Object is disposed or controller is null. Cannot start.");
+}
+
         for (var pin = 0; pin < _gpioPins.Length; pin++)
         {
             _logger.LogDebug("Opening pin {pin}", _gpioPins[pin]);
-            _controller?.OpenPin(_gpioPins[pin], PinMode.InputPullUp);
+            _controller.OpenPin(_gpioPins[pin], PinMode.InputPullUp);
             Thread.Sleep(500); // prevent a button press on pin open
-            _controller?.RegisterCallbackForPinValueChangedEvent(_gpioPins[pin], PinEventTypes.Rising | PinEventTypes.Falling, Callback);
+            _controller.RegisterCallbackForPinValueChangedEvent(_gpioPins[pin], PinEventTypes.Rising | PinEventTypes.Falling, Callback);
         }
     }
     public void Stop()
     {
         for (var pin = 0; pin < _gpioPins.Length; pin++)
         {
+            _logger.LogDebug("Closing pin {pin}", _gpioPins[pin]);
             _controller?.UnregisterCallbackForPinValueChangedEvent(_gpioPins[pin], Callback);
             _controller?.ClosePin(_gpioPins[pin]);
         }
