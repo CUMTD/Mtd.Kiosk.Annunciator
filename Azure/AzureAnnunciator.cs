@@ -1,3 +1,4 @@
+using System.Security;
 using System.Text;
 using Microsoft.CognitiveServices.Speech;
 using Microsoft.CognitiveServices.Speech.Audio;
@@ -100,7 +101,7 @@ public class AzureAnnunciator : IAnnunciator
 		sb.AppendLine("<speak version=\"1.0\" xmlns=\"http://www.w3.org/2001/10/synthesis\" xmlns:mstts=\"https://www.w3.org/2001/mstts\" xml:lang=\"en-US\">");
 		sb.AppendLine("\t<voice name=\"en-US-AriaNeural\">");
 		sb.AppendLine("\t\t<mstts:express-as style=\"customerservice\">");
-		sb.AppendLine($"\t\t\t{text}");
+		sb.AppendLine($"\t\t\t{EscapeTextSaml(text)}");
 		sb.AppendLine("\t\t</mstts:express-as>");
 		sb.AppendLine("\t</voice>");
 		sb.AppendLine("</speak>");
@@ -111,4 +112,6 @@ public class AzureAnnunciator : IAnnunciator
 
 		return xml;
 	}
+
+	private static string EscapeTextSaml(string text) => SecurityElement.Escape(text);
 }
