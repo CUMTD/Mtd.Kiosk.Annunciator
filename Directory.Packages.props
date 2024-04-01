@@ -5,7 +5,7 @@
   <ItemGroup>
   </ItemGroup>
   <ItemGroup>
-    <PackageVersion Include="Microsoft.CognitiveServices.Speech" Version="1.35.0" />
+    <PackageVersion Include="Microsoft.CognitiveServices.Speech" Version="1.36.0" />
     <PackageVersion Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="8.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.FileExtensions" Version="8.0.0" />
