@@ -1,4 +1,3 @@
-using System.ComponentModel;
 using Microsoft.Extensions.Logging;
 using Mtd.Kiosk.Annunciator.Core;
 using Sealevel;
@@ -11,12 +10,13 @@ public sealed class SeaDacReader(ILogger<SeaDacReader> logger) : ButtonReader(lo
 	private const int InputQuantity = 4;
 	private const int ReadDelay = 16;
 	private const bool IsBlocking = false;
+	private const int PollingIntervalMs = 10;
 
 	public override string Name => "SeaDAC Lite Reader";
 	public const string KEY = "SEADAC";
 
 	private readonly SeaMAX _seaMax = new();
-	private BackgroundWorker? _worker;
+	private CancellationTokenSource? _cts;
 	private bool _isDisposed = false;
 	private bool _isRunning = false;
 	private readonly byte[] _bytes = new byte[1]; // stores current button state (byte[] required by SeaMAX library)
@@ -26,46 +26,45 @@ public sealed class SeaDacReader(ILogger<SeaDacReader> logger) : ButtonReader(lo
 	{
 		ObjectDisposedException.ThrowIf(_isDisposed, Name);
 
-
 		if (_isRunning)
 		{
 			_logger.LogWarning("{Name} is already running", Name);
 			return;
 		}
 
-		// start
 		OpenRead();
-		_worker = new BackgroundWorker { WorkerSupportsCancellation = true };
-		_worker.DoWork += DoWork;
+
+		_cts = new CancellationTokenSource();
 		_isRunning = true;
-		_worker.RunWorkerAsync();
+		Task.Run(() => PollButtonAsync(_cts.Token));
+
 		_logger.LogInformation("{Name} started", Name);
 	}
 
 	private void OpenRead()
 	{
-		// initialization code from v2
 		if (!_seaMax.IsSeaDACInitialized)
 		{
 			var initResult = _seaMax.SDL_Initialize();
 			if (initResult < 0)
 			{
-				throw new Exception($"SDL_Initialize failed: {initResult}");
+				throw new InvalidOperationException($"SDL_Initialize failed: {initResult}");
 			}
 
 			var deviceCount = _seaMax.SDL_SearchForDevices();
 			if (deviceCount < 0)
 			{
-				throw new Exception($"SDL_SearchForDevices failed: {deviceCount}");
+				throw new InvalidOperationException($"SDL_SearchForDevices failed: {deviceCount}");
 			}
+
 			if (deviceCount == 0)
 			{
-				throw new Exception("No SDL devices found");
+				throw new InvalidOperationException("No SDL devices found");
 			}
 
 			if (_seaMax.SDL_FirstDevice() < 0)
 			{
-				throw new Exception("SDL_FirstDevice failed");
+				throw new InvalidOperationException("SDL_FirstDevice failed");
 			}
 		}
 
@@ -74,48 +73,45 @@ public sealed class SeaDacReader(ILogger<SeaDacReader> logger) : ButtonReader(lo
 			var id = 0;
 			if (_seaMax.SDL_GetDeviceID(ref id) < 0)
 			{
-				throw new Exception("SDL_GetDeviceID failed");
+				throw new InvalidOperationException("SDL_GetDeviceID failed");
 			}
 
 			if (_seaMax.SM_Open($"SeaDAC Lite {id}") < 0)
 			{
-				throw new Exception("SM_Open failed");
+				throw new InvalidOperationException("SM_Open failed");
 			}
 		}
 	}
 
-	private void DoWork(object? sender, DoWorkEventArgs e)
+	private async Task PollButtonAsync(CancellationToken token)
 	{
-		// get the backgroundWorker that raised the event
-		var worker = (BackgroundWorker)sender!;
-
-		// check if ok to continue
-		while (!worker.CancellationPending)
+		while (!token.IsCancellationRequested)
 		{
-			// poll button state every 10ms
 			try
 			{
 				CheckButtonState();
-				Thread.Sleep(10);
+				await Task.Delay(PollingIntervalMs, token);
+			}
+			catch (TaskCanceledException)
+			{
+				// Expected when cancelled
 			}
 			catch (Exception ex)
 			{
 				_logger.LogError(ex, "Error monitoring button state");
 			}
 		}
+
 		CleanupAfterStop();
 	}
 
 	private void CheckButtonState()
 	{
-
 		if (_seaMax.SM_NotifyInputState(0) != 2)
 		{
-			// _bytes array is updated internally by SM_NotifyOnInputChange to reflect current input state
 			_seaMax.SM_NotifyOnInputChange(ModbusStart, InputQuantity, _bytes, ReadDelay, IsBlocking ? 1 : 0);
 		}
 
-		// 1 = pressed, 0 = not pressed
 		var currentState = _bytes[0] >= 1;
 		if (currentState == _lastState)
 		{
@@ -139,13 +135,11 @@ public sealed class SeaDacReader(ILogger<SeaDacReader> logger) : ButtonReader(lo
 
 	public override void Stop()
 	{
-		if (_worker?.IsBusy == true)
+		if (_isRunning)
 		{
-			_worker.CancelAsync();
+			_cts?.Cancel();
+			_logger.LogInformation("{Name} stopped", Name);
 		}
-
-		Dispose();
-		_logger.LogInformation("{Name} stopped", Name);
 	}
 
 	public override void Dispose()
@@ -154,6 +148,8 @@ public sealed class SeaDacReader(ILogger<SeaDacReader> logger) : ButtonReader(lo
 		{
 			return;
 		}
+
+		Stop();
 
 		if (_seaMax.IsSeaMAXOpen)
 		{
@@ -166,8 +162,7 @@ public sealed class SeaDacReader(ILogger<SeaDacReader> logger) : ButtonReader(lo
 			_seaMax.SDL_Cleanup();
 		}
 
-		_worker?.Dispose();
+		_cts?.Dispose();
 		_isDisposed = true;
-		// base.Dispose(); // Remove this line to fix CS0205 error
 	}
 }
