@@ -6,6 +6,4 @@ public class RealTimeClientConfig
 	public const string ConfigSectionName = "RealTimeClient";
 	[Required]
 	public required string RealTimeAddressTemplate { get; set; }
-	[Required]
-	public required string HeartbeatAddressTemplate { get; set; }
 }

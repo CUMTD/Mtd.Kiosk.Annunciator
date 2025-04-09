@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFramework>net9.0</TargetFramework>
 		<AnalysisLevel>latest</AnalysisLevel>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
@@ -10,7 +10,11 @@
 		<PublishSingleFile>true</PublishSingleFile>
 		<UserSecretsId>9614b352-dbaf-4379-95c0-b368af95fe6e</UserSecretsId>
 		<PackageId>Mtd.Kiosk.Annunciator.Service</PackageId>
+		<PlatformTarget>x86</PlatformTarget>
+
 	</PropertyGroup>
+
+	
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Extensions.Configuration" />
@@ -44,9 +48,10 @@
 	<ItemGroup>
 		<ProjectReference Include="..\Azure\Mtd.Kiosk.Annunciator.Azure.csproj" />
 		<ProjectReference Include="..\Core\Mtd.Kiosk.Annunciator.Core.csproj" />
+		<ProjectReference Include="..\KioskApi\Mtd.Kiosk.Annunciator.Realtime.KioskApi.csproj" />
+		<ProjectReference Include="..\Mtd.Kiosk.Annunciator.Readers.SeaDacLite\Mtd.Kiosk.Annunciator.Readers.SeaDacLite.csproj" />
 		<ProjectReference Include="..\Readers\Raspi\Mtd.Kiosk.Annunciator.Readers.Raspi.csproj" />
 		<ProjectReference Include="..\Readers\Simple\Mtd.Kiosk.Annunciator.Readers.Simple.csproj" />
-		<ProjectReference Include="..\Realtime\UmbracoApi\Mtd.Kiosk.Annunciator.Realtime.UmbracoApi.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
