@@ -5,9 +5,8 @@ using Microsoft.Extensions.Options;
 using Mtd.Kiosk.Annunciator.Core;
 using Mtd.Kiosk.Annunciator.Core.Config;
 using Mtd.Kiosk.Annunciator.Core.Models;
-using Mtd.Kiosk.Annunciator.Realtime.UmbracoApi.DTO;
 
-namespace Mtd.Kiosk.Annunciator.Realtime.UmbracoApi;
+namespace Mtd.Kiosk.Annunciator.Realtime.KioskApi;
 
 public class KioskApiRealtimeClient : IKioskRealTimeClient
 {

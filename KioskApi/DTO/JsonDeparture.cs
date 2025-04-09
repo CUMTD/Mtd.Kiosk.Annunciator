@@ -1,4 +1,4 @@
-namespace Mtd.Kiosk.Annunciator.Realtime.UmbracoApi.DTO;
+namespace Mtd.Kiosk.Annunciator.Realtime.KioskApi.DTO;
 internal sealed class JsonDeparture
 {
 

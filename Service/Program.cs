@@ -14,7 +14,6 @@ using Mtd.Kiosk.Annunciator.Readers.SeaDacLite;
 using Mtd.Kiosk.Annunciator.Readers.SeaDacLite.Config;
 using Mtd.Kiosk.Annunciator.Readers.Simple;
 using Mtd.Kiosk.Annunciator.Readers.Simple.Config;
-using Mtd.Kiosk.Annunciator.Realtime.UmbracoApi;
 using Mtd.Kiosk.Annunciator.Service;
 using Mtd.Kiosk.Annunciator.Service.Extensions;
 using Serilog;
