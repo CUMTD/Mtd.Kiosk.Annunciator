@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using Mtd.Kiosk.Annunciator.Core;
 using Mtd.Kiosk.Annunciator.Core.Config;
 using Mtd.Kiosk.Annunciator.Core.Models;
+using Mtd.Kiosk.Annunciator.Realtime.KioskApi.DTO;
 
 namespace Mtd.Kiosk.Annunciator.Realtime.KioskApi;
 

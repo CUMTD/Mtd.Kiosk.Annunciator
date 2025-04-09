@@ -7,9 +7,13 @@ namespace Mtd.Kiosk.Annunciator.Readers.SeaDacLite;
 
 public sealed class SeaDacReader(ILogger<SeaDacReader> logger) : ButtonReader(logger), IDisposable
 {
+	private const int ModbusStart = 0;
+	private const int InputQuantity = 4;
+	private const int ReadDelay = 16;
+	private const bool IsBlocking = false;
+
 	public override string Name => "SeaDAC Lite Reader";
 	public const string KEY = "SEADAC";
-
 
 	private readonly SeaMAX _seaMax = new();
 	private BackgroundWorker? _worker;
@@ -20,10 +24,8 @@ public sealed class SeaDacReader(ILogger<SeaDacReader> logger) : ButtonReader(lo
 
 	public override void Start()
 	{
-		if (_isDisposed)
-		{
-			ObjectDisposedException.ThrowIf(_isDisposed, Name);
-		}
+		ObjectDisposedException.ThrowIf(_isDisposed, Name);
+
 
 		if (_isRunning)
 		{
@@ -109,7 +111,8 @@ public sealed class SeaDacReader(ILogger<SeaDacReader> logger) : ButtonReader(lo
 
 		if (_seaMax.SM_NotifyInputState(0) != 2)
 		{
-			_seaMax.SM_NotifyOnInputChange(0, 4, _bytes, 16, 0);
+			// _bytes array is updated internally by SM_NotifyOnInputChange to reflect current input state
+			_seaMax.SM_NotifyOnInputChange(ModbusStart, InputQuantity, _bytes, ReadDelay, IsBlocking ? 1 : 0);
 		}
 
 		// 1 = pressed, 0 = not pressed
