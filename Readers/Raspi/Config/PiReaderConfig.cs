@@ -6,7 +6,10 @@ public class PiReaderConfig
 	public const string ConfigSectionName = "PiReader";
 
 	[Required]
-	public required int[] Pins { get; set; }
+	public required int Pin { get; set; }
 	public bool Enabled { get; set; }
+
+	[Required]
+	public bool ExternalResistor { get; set; }
 
 }
