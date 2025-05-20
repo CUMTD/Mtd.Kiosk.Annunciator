@@ -131,6 +131,7 @@ try
 
 			// Services
 			_ = services.AddHostedService<AnnunciatorService>();
+			services.AddHostedService<HeartbeatWorker>();
 
 		})
 		.UseSerilog((context, loggingConfig) =>
@@ -146,6 +147,7 @@ try
 }
 catch (Exception ex)
 {
+	Console.WriteLine(ex.ToString());
 	Log.Fatal(ex, "Host terminated unexpectedly");
 	Environment.ExitCode = 1;
 }

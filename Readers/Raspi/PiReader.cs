@@ -1,4 +1,3 @@
-using System.Collections.Immutable;
 using System.Device.Gpio;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -11,7 +10,8 @@ public sealed class PiReader : ButtonReader, IButtonReader, IDisposable
 {
 	public const string KEY = "RASPI";
 
-	private readonly ImmutableArray<int> _gpioPins;
+	private readonly int _gpioPin;
+	private readonly PinMode _pinMode;
 
 	private bool disposedValue;
 	private GpioController? _controller;
@@ -20,14 +20,9 @@ public sealed class PiReader : ButtonReader, IButtonReader, IDisposable
 	public PiReader(IOptions<PiReaderConfig> options, ILogger<PiReader> logger) : base(logger)
 	{
 		ArgumentNullException.ThrowIfNull(options?.Value, nameof(options.Value));
-		ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(options.Value.Pins.Length, 0, nameof(options.Value.Pins));
 
-		for (var pin = 0; pin < options.Value.Pins.Length; pin++)
-		{
-			ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(options.Value.Pins[pin], 0, nameof(options.Value.Pins));
-		}
-
-		_gpioPins = [.. options.Value.Pins];
+		_gpioPin = options.Value.Pin;
+		_pinMode = options.Value.ExternalResistor ? PinMode.Input : PinMode.InputPullUp;
 		_controller = new GpioController();
 	}
 	public override void Start()
@@ -42,25 +37,23 @@ public sealed class PiReader : ButtonReader, IButtonReader, IDisposable
 			throw new Exception("Controller is null. Cannot start.");
 		}
 
-		for (var pin = 0; pin < _gpioPins.Length; pin++)
-		{
-			_logger.LogDebug("Opening pin {pin}", _gpioPins[pin]);
-			_controller.OpenPin(_gpioPins[pin], PinMode.InputPullUp);
 
-			Thread.Sleep(500); // prevent a button press on pin open
-			_controller.RegisterCallbackForPinValueChangedEvent(_gpioPins[pin], PinEventTypes.Rising | PinEventTypes.Falling, Callback);
-		}
+		_logger.LogDebug("Opening pin {pin}", _gpioPin);
+		_controller.OpenPin(_gpioPin, PinMode.InputPullUp);
+
+		Thread.Sleep(500); // prevent a button press on pin open
+		_controller.RegisterCallbackForPinValueChangedEvent(_gpioPin, PinEventTypes.Falling, Callback);
+
 
 		_logger.LogInformation("{readerName} started", Name);
 	}
 	public override void Stop()
 	{
-		for (var pin = 0; pin < _gpioPins.Length; pin++)
-		{
-			_logger.LogDebug("Closing pin {pin}", _gpioPins[pin]);
-			_controller?.UnregisterCallbackForPinValueChangedEvent(_gpioPins[pin], Callback);
-			_controller?.ClosePin(_gpioPins[pin]);
-		}
+
+		_logger.LogDebug("Closing pin {pin}", _gpioPin);
+		_controller?.UnregisterCallbackForPinValueChangedEvent(_gpioPin, Callback);
+		_controller?.ClosePin(_gpioPin);
+
 
 		_logger.LogInformation("{readerName} stopped", Name);
 	}

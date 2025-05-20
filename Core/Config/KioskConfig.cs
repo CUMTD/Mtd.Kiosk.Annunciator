@@ -6,4 +6,6 @@ public class KioskConfig
 	public required string KioskId { get; set; }
 	public required string StopId { get; set; }
 	public required string ApiKey { get; set; }
+
+	public required string HeartbeatEndpoint { get; set; }
 }

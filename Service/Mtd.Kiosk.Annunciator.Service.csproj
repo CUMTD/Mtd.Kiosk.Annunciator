@@ -10,7 +10,6 @@
 		<PublishSingleFile>true</PublishSingleFile>
 		<UserSecretsId>9614b352-dbaf-4379-95c0-b368af95fe6e</UserSecretsId>
 		<PackageId>Mtd.Kiosk.Annunciator.Service</PackageId>
-		<PlatformTarget>x86</PlatformTarget>
 
 	</PropertyGroup>
 
@@ -55,9 +54,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Update="appsettings.json">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
 		<None Update="appsettings.Development.json" Condition="'$(Configuration)'!='Release'">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
