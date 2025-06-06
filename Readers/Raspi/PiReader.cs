@@ -9,20 +9,19 @@ namespace Mtd.Kiosk.Annunciator.Readers.Raspi;
 public sealed class PiReader : ButtonReader, IButtonReader, IDisposable
 {
 	public const string KEY = "RASPI";
-
 	private readonly int _gpioPin;
 	private readonly PinMode _pinMode;
-
 	private bool disposedValue;
 	private GpioController? _controller;
-	public override string Name => "Raspberry Pi Reader";
-
-	public PiReader(IOptions<PiReaderConfig> options, ILogger<PiReader> logger) : base(logger)
+	private DateTime _lastButtonPress = DateTime.MinValue;
+	private readonly TimeSpan _debounceDelay;
+	public override string Name => "Raspberry Pi Reader"; public PiReader(IOptions<PiReaderConfig> options, ILogger<PiReader> logger) : base(logger)
 	{
 		ArgumentNullException.ThrowIfNull(options?.Value, nameof(options.Value));
 
 		_gpioPin = options.Value.Pin;
-		_pinMode = options.Value.ExternalResistor ? PinMode.Input : PinMode.InputPullUp;
+		_pinMode = PinMode.InputPullUp; // Always use InputPullUp for reliable button detection
+		_debounceDelay = TimeSpan.FromMilliseconds(Math.Max(50, options.Value.DebounceDelayMs)); // Minimum 50ms
 		_controller = new GpioController();
 	}
 	public override void Start()
@@ -37,9 +36,8 @@ public sealed class PiReader : ButtonReader, IButtonReader, IDisposable
 			throw new Exception("Controller is null. Cannot start.");
 		}
 
-
 		_logger.LogDebug("Opening pin {pin}", _gpioPin);
-		_controller.OpenPin(_gpioPin, PinMode.InputPullUp);
+		_controller.OpenPin(_gpioPin, _pinMode);
 
 		Thread.Sleep(500); // prevent a button press on pin open
 		_controller.RegisterCallbackForPinValueChangedEvent(_gpioPin, PinEventTypes.Falling, Callback);
@@ -59,6 +57,16 @@ public sealed class PiReader : ButtonReader, IButtonReader, IDisposable
 	}
 	private void Callback(object sender, PinValueChangedEventArgs args)
 	{
+		var now = DateTime.UtcNow;
+
+		// Debounce: ignore button presses that occur too quickly after the previous one
+		if (now - _lastButtonPress < _debounceDelay)
+		{
+			_logger.LogTrace("Button press ignored due to debouncing on pin {pin}", args.PinNumber);
+			return;
+		}
+
+		_lastButtonPress = now;
 		_logger.LogDebug("Button {changeType} on pin {pin}", args.ChangeType, args.PinNumber);
 		ButtonPressPending = true;
 	}
