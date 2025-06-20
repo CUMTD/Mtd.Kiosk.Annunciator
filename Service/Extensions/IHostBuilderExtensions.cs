@@ -11,7 +11,7 @@ internal static class IHostBuilderExtensions
 		{
 			builder.UseWindowsService(options =>
 			{
-				options.ServiceName = "Mtd.Kiosk.Annunciator";
+				options.ServiceName = "MTD Kiosk Annunciator";
 			});
 		}
 		else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
