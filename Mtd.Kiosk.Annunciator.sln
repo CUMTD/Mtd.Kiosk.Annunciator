@@ -10,7 +10,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.gitignore = .gitignore
 		Directory.Packages.props = Directory.Packages.props
 		icon.png = icon.png
-		Readers\Raspi\Mtd.Kiosk.Annunciator.Readers.Raspi.csproj = Readers\Raspi\Mtd.Kiosk.Annunciator.Readers.Raspi.csproj
 		NuGet.config = NuGet.config
 		README.md = README.md
 	EndProjectSection
@@ -29,13 +28,20 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mtd.Kiosk.Annunciator.Core", "Core\Mtd.Kiosk.Annunciator.Core.csproj", "{B4721229-428E-49E5-B432-A8DD7DB53448}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mtd.Kiosk.Annunciator.Realtime.UmbracoApi", "Realtime\UmbracoApi\Mtd.Kiosk.Annunciator.Realtime.UmbracoApi.csproj", "{A1638C0F-9D6C-415A-AFEC-E07689CF44A4}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mtd.Kiosk.Annunciator.Azure", "Azure\Mtd.Kiosk.Annunciator.Azure.csproj", "{2BD7B930-6AA8-4213-899E-EA26F0F4537A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mtd.Kiosk.Annunciator.Readers.Simple", "Readers\Simple\Mtd.Kiosk.Annunciator.Readers.Simple.csproj", "{95BED5F7-5FEE-4FCD-962D-CEFF14964B0D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mtd.Kiosk.Annunciator.Service", "Service\Mtd.Kiosk.Annunciator.Service.csproj", "{789511AB-0C5A-43CD-8459-8D0E30C1B135}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mtd.Kiosk.Annunciator.Readers.Raspi", "Readers\Raspi\Mtd.Kiosk.Annunciator.Readers.Raspi.csproj", "{602581AB-80CC-429E-9DD3-CF8A018802A9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mtd.Kiosk.Annunciator.Realtime.KioskApi", "KioskApi\Mtd.Kiosk.Annunciator.Realtime.KioskApi.csproj", "{7C545D27-4263-4E22-BA6C-B22BBB172FC2}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B4721229-428E-49E5-B432-A8DD7DB53448} = {B4721229-428E-49E5-B432-A8DD7DB53448}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mtd.Kiosk.Annunciator.Readers.SeaDacLite", "Mtd.Kiosk.Annunciator.Readers.SeaDacLite\Mtd.Kiosk.Annunciator.Readers.SeaDacLite.csproj", "{C7A611E7-43D7-48F4-9EAA-5843EE13F64B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,10 +53,6 @@ Global
 		{B4721229-428E-49E5-B432-A8DD7DB53448}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B4721229-428E-49E5-B432-A8DD7DB53448}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B4721229-428E-49E5-B432-A8DD7DB53448}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A1638C0F-9D6C-415A-AFEC-E07689CF44A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A1638C0F-9D6C-415A-AFEC-E07689CF44A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A1638C0F-9D6C-415A-AFEC-E07689CF44A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A1638C0F-9D6C-415A-AFEC-E07689CF44A4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2BD7B930-6AA8-4213-899E-EA26F0F4537A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2BD7B930-6AA8-4213-899E-EA26F0F4537A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2BD7B930-6AA8-4213-899E-EA26F0F4537A}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -63,6 +65,18 @@ Global
 		{789511AB-0C5A-43CD-8459-8D0E30C1B135}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{789511AB-0C5A-43CD-8459-8D0E30C1B135}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{789511AB-0C5A-43CD-8459-8D0E30C1B135}.Release|Any CPU.Build.0 = Release|Any CPU
+		{602581AB-80CC-429E-9DD3-CF8A018802A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{602581AB-80CC-429E-9DD3-CF8A018802A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{602581AB-80CC-429E-9DD3-CF8A018802A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{602581AB-80CC-429E-9DD3-CF8A018802A9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C545D27-4263-4E22-BA6C-B22BBB172FC2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C545D27-4263-4E22-BA6C-B22BBB172FC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C545D27-4263-4E22-BA6C-B22BBB172FC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C545D27-4263-4E22-BA6C-B22BBB172FC2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7A611E7-43D7-48F4-9EAA-5843EE13F64B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7A611E7-43D7-48F4-9EAA-5843EE13F64B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7A611E7-43D7-48F4-9EAA-5843EE13F64B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7A611E7-43D7-48F4-9EAA-5843EE13F64B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
