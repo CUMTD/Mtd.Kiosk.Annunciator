@@ -5,15 +5,14 @@ using Microsoft.Extensions.Options;
 using Mtd.Kiosk.Annunciator.Core;
 using Mtd.Kiosk.Annunciator.Core.Config;
 using Mtd.Kiosk.Annunciator.Core.Models;
-using Mtd.Kiosk.Annunciator.Realtime.UmbracoApi.DTO;
+using Mtd.Kiosk.Annunciator.Realtime.KioskApi.DTO;
 
-namespace Mtd.Kiosk.Annunciator.Realtime.UmbracoApi;
+namespace Mtd.Kiosk.Annunciator.Realtime.KioskApi;
 
-public class UmbracoApiRealtimeClient : IKioskRealTimeClient
+public class KioskApiRealtimeClient : IKioskRealTimeClient
 {
 	private readonly HttpClient _httpClient;
-	private readonly ILogger<UmbracoApiRealtimeClient> _logger;
-	private readonly string _heartbeatUrlTemplate;
+	private readonly ILogger<KioskApiRealtimeClient> _logger;
 	private readonly string _departuresUrlTemplate;
 
 	private static readonly JsonSerializerOptions _jsonOptions = new()
@@ -21,52 +20,25 @@ public class UmbracoApiRealtimeClient : IKioskRealTimeClient
 		PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
 	};
 
-	public UmbracoApiRealtimeClient(HttpClient httpClient, IOptions<RealTimeClientConfig> options, ILogger<UmbracoApiRealtimeClient> logger)
+	public KioskApiRealtimeClient(HttpClient httpClient, IOptions<RealTimeClientConfig> options, ILogger<KioskApiRealtimeClient> logger)
 	{
 		ArgumentNullException.ThrowIfNull(httpClient, nameof(httpClient));
 		ArgumentNullException.ThrowIfNull(options?.Value, nameof(options));
-		ArgumentException.ThrowIfNullOrWhiteSpace(options.Value.HeartbeatAddressTemplate, nameof(options.Value.HeartbeatAddressTemplate));
 		ArgumentException.ThrowIfNullOrWhiteSpace(options.Value.RealTimeAddressTemplate, nameof(options.Value.RealTimeAddressTemplate));
 		ArgumentNullException.ThrowIfNull(logger, nameof(logger));
 
 		_httpClient = httpClient;
-		_heartbeatUrlTemplate = options.Value.HeartbeatAddressTemplate;
 		_departuresUrlTemplate = options.Value.RealTimeAddressTemplate;
 		_logger = logger;
 	}
 
-	public async Task SendHeartbeat(string kioskId, CancellationToken cancellationToken)
-	{
-		var url = string.Format(_heartbeatUrlTemplate, kioskId);
-		_logger.LogTrace("Sending heartbeat for {id} to {url}", kioskId, url);
 
-		HttpResponseMessage responseMessage;
-		try
-		{
-			responseMessage = await GetDeparturesFromServer(kioskId, cancellationToken);
-		}
-		catch (Exception ex)
-		{
-			_logger.LogWarning(ex, "Failed to send heartbeat to {kioskId}", kioskId);
-			return;
-		}
-
-		if (responseMessage.IsSuccessStatusCode)
-		{
-			_logger.LogTrace("Successfully sent heartbeat for {kioskId}", kioskId);
-		}
-		else
-		{
-			_logger.LogWarning("Failed to send heartbeat for {kioskId}. Got status code {statusCode}", kioskId, responseMessage.StatusCode);
-		}
-	}
-
-	public async Task<IReadOnlyCollection<Departure>?> GetRealtime(string kioskId, CancellationToken cancellationToken)
+	public async Task<IReadOnlyCollection<Departure>?> GetRealtime(string kioskId, string stopId, CancellationToken cancellationToken)
 	{
 		HttpResponseMessage responseMessage;
 		try
 		{
-			responseMessage = await GetDeparturesFromServer(kioskId, cancellationToken);
+			responseMessage = await GetDeparturesFromServer(kioskId, stopId, cancellationToken);
 		}
 		catch (Exception ex)
 		{
@@ -92,9 +64,9 @@ public class UmbracoApiRealtimeClient : IKioskRealTimeClient
 		}
 	}
 
-	private async Task<HttpResponseMessage> GetDeparturesFromServer(string id, CancellationToken cancellationToken)
+	private async Task<HttpResponseMessage> GetDeparturesFromServer(string kioskId, string stopId, CancellationToken cancellationToken)
 	{
-		var url = string.Format(_departuresUrlTemplate, id);
+		var url = $"{_departuresUrlTemplate}{stopId}/annunciator?kioskId={kioskId}";
 		_logger.LogDebug("Fetching {url}", url);
 		var result = await _httpClient.GetAsync(url, cancellationToken);
 		return result;
@@ -120,7 +92,8 @@ public class UmbracoApiRealtimeClient : IKioskRealTimeClient
 	private static Departure ConvertJsonDepartureToDeparture(JsonDeparture item)
 	{
 		var baseName = $"{item.Number} {item.Direction} {item.Name}";
-		var name = item.HasModifier ? $"{baseName} to {item.Modifier}" : baseName;
-		return new Departure(name, item.Display);
+		var name = item.Modifier.Length > 0 ? $"{baseName} to {item.Modifier}" : baseName;
+		return new Departure(name, item.DepartsIn, item.IsRealtime);
 	}
+
 }

@@ -26,7 +26,8 @@ internal class AnnunciatorService : BackgroundService, IDisposable
 	{
 		ArgumentNullException.ThrowIfNull(config.Value, nameof(config));
 		ArgumentException.ThrowIfNullOrWhiteSpace(config.Value.Name, nameof(config.Value.Name));
-		ArgumentException.ThrowIfNullOrWhiteSpace(config.Value.Id, nameof(config.Value.Id));
+		ArgumentException.ThrowIfNullOrWhiteSpace(config.Value.KioskId, nameof(config.Value.KioskId));
+		ArgumentException.ThrowIfNullOrWhiteSpace(config.Value.StopId, nameof(config.Value.StopId));
 		ArgumentNullException.ThrowIfNull(readers, nameof(readers));
 		ArgumentNullException.ThrowIfNull(kioskRealTimeClient, nameof(kioskRealTimeClient));
 		ArgumentNullException.ThrowIfNull(annunciator, nameof(annunciator));
@@ -100,7 +101,7 @@ internal class AnnunciatorService : BackgroundService, IDisposable
 		IReadOnlyCollection<Departure>? departures;
 		try
 		{
-			departures = await _kioskRealTimeClient.GetRealtime(_config.Id, cancellationToken);
+			departures = await _kioskRealTimeClient.GetRealtime(_config.KioskId, _config.StopId, cancellationToken);
 		}
 		catch (Exception ex)
 		{
@@ -109,7 +110,7 @@ internal class AnnunciatorService : BackgroundService, IDisposable
 			return;
 		}
 
-		_logger.LogDebug("Fetched {count} departures for {kioskId}", departures?.Count ?? -1, _config.Id);
+		_logger.LogDebug("Fetched {count} departures for {kioskId}", departures?.Count ?? -1, _config.KioskId);
 
 		try
 		{

@@ -10,9 +10,11 @@ using Mtd.Kiosk.Annunciator.Core;
 using Mtd.Kiosk.Annunciator.Core.Config;
 using Mtd.Kiosk.Annunciator.Readers.Raspi;
 using Mtd.Kiosk.Annunciator.Readers.Raspi.Config;
+using Mtd.Kiosk.Annunciator.Readers.SeaDacLite;
+using Mtd.Kiosk.Annunciator.Readers.SeaDacLite.Config;
 using Mtd.Kiosk.Annunciator.Readers.Simple;
 using Mtd.Kiosk.Annunciator.Readers.Simple.Config;
-using Mtd.Kiosk.Annunciator.Realtime.UmbracoApi;
+using Mtd.Kiosk.Annunciator.Realtime.KioskApi;
 using Mtd.Kiosk.Annunciator.Service;
 using Mtd.Kiosk.Annunciator.Service.Extensions;
 using Serilog;
@@ -56,6 +58,11 @@ try
 				.Bind(context.Configuration.GetSection(PressEveryNSecondsReaderConfig.ConfigSectionName));
 
 			_ = services
+				.Configure<SeaDacLiteReaderConfig>(context.Configuration.GetSection(SeaDacLiteReaderConfig.ConfigSectionName))
+				.AddOptionsWithValidateOnStart<SeaDacLiteReaderConfig>(SeaDacLiteReaderConfig.ConfigSectionName)
+				.Bind(context.Configuration.GetSection(SeaDacLiteReaderConfig.ConfigSectionName));
+
+			_ = services
 				.Configure<RealTimeClientConfig>(context.Configuration.GetSection(RealTimeClientConfig.ConfigSectionName))
 				.AddOptionsWithValidateOnStart<RealTimeClientConfig>(RealTimeClientConfig.ConfigSectionName)
 				.Bind(context.Configuration.GetSection(RealTimeClientConfig.ConfigSectionName));
@@ -73,6 +80,7 @@ try
 			// Readers
 			_ = services.AddKeyedSingleton<IButtonReader, PiReader>(PiReader.KEY);
 			_ = services.AddKeyedSingleton<IButtonReader, PressEveryNSecondsReader>(PressEveryNSecondsReader.KEY);
+			_ = services.AddKeyedSingleton<IButtonReader, SeaDacReader>(SeaDacReader.KEY);
 
 			_ = services.AddSingleton<IEnumerable<IButtonReader>>(serviceProvider =>
 			{
@@ -87,15 +95,21 @@ try
 					var piReaderConfig = serviceProvider.GetRequiredService<IOptions<PiReaderConfig>>().Value;
 					if (piReaderConfig.Enabled)
 					{
-						providers.Add(serviceProvider.GetRequiredKeyedService<IButtonReader>(PiReader.KEY));
+						providers.Add(serviceProvider.GetRequiredKeyedService<IButtonReader>(Mtd.Kiosk.Annunciator.Readers.Raspi.PiReader.KEY));
 					}
 				}
 
-				// The PressEveryNSecondsReader can be enabled/disabled in the config.
+				// The PressEveryNSecondsReader and seaDacReader can be enabled/disabled in the config.
 				var everyNConfig = serviceProvider.GetRequiredService<IOptions<PressEveryNSecondsReaderConfig>>().Value;
 				if (everyNConfig.Enabled)
 				{
 					providers.Add(serviceProvider.GetRequiredKeyedService<IButtonReader>(PressEveryNSecondsReader.KEY));
+				}
+
+				var seaDacConfig = serviceProvider.GetRequiredService<IOptions<SeaDacLiteReaderConfig>>().Value;
+				if (seaDacConfig.Enabled)
+				{
+					providers.Add(serviceProvider.GetRequiredKeyedService<IButtonReader>(SeaDacReader.KEY));
 				}
 
 				return providers;
@@ -103,9 +117,13 @@ try
 
 
 			// Clients
-			_ = services.AddHttpClient<IKioskRealTimeClient, UmbracoApiRealtimeClient>(client =>
+			_ = services.AddHttpClient<IKioskRealTimeClient, KioskApiRealtimeClient>(client =>
 			{
 				client.DefaultRequestHeaders.Add("Accept", "application/json");
+
+				var serviceProvider = services.BuildServiceProvider();
+				var kioskConfig = serviceProvider.GetRequiredService<IOptions<KioskConfig>>().Value;
+				client.DefaultRequestHeaders.Add("X-ApiKey", kioskConfig.ApiKey);
 			});
 
 			// Annunciators
@@ -113,6 +131,7 @@ try
 
 			// Services
 			_ = services.AddHostedService<AnnunciatorService>();
+			services.AddHostedService<HeartbeatWorker>();
 
 		})
 		.UseSerilog((context, loggingConfig) =>
@@ -128,6 +147,7 @@ try
 }
 catch (Exception ex)
 {
+	Console.WriteLine(ex.ToString());
 	Log.Fatal(ex, "Host terminated unexpectedly");
 	Environment.ExitCode = 1;
 }
