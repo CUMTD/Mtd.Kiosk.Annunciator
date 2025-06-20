@@ -30,7 +30,7 @@ try
 				.SetBasePath(basePath)
 				.AddJsonFile("appsettings.json", true, true)
 				.AddJsonFile($"appsettings.{context.HostingEnvironment.EnvironmentName}.json", true, true)
-				.AddEnvironmentVariables("Mtd_Kiosk_Annunciator_Service_");
+				.AddEnvironmentVariables("Kiosk_Annunciator__");
 
 			if (context.HostingEnvironment.IsDevelopment())
 			{
