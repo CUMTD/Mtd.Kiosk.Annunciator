@@ -34,11 +34,11 @@ jobs:
             --self-contained true \
             --output publish_output \
             --no-restore
-          zip -r service-${{ matrix.arch == 'win-x64' && 'x64' || 'x32' }}-${{ github.event.release.tag_name }}.zip publish_output
+          zip -r service-${{ matrix.arch == 'win-x64' && 'x64' || 'x86' }}-${{ github.event.release.tag_name }}.zip publish_output
 
       - name: Upload Release Asset
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.event.release.tag_name }}
           files: |
-            service-${{ matrix.arch == 'win-x64' && 'x64' || 'x32' }}-${{ github.event.release.tag_name }}.zip
+            service-${{ matrix.arch == 'win-x64' && 'x64' || 'x86' }}-${{ github.event.release.tag_name }}.zip
