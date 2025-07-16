@@ -48,6 +48,10 @@ try
 					new Uri(keyVaultUrl),
 					new DefaultAzureCredential());
 			}
+			else
+			{
+				throw new InvalidOperationException("KeyVaultUrl is not configured. Please set Kiosk_Annunciator__KeyVaultUrl in your environment variables or appsettings.");
+			}
 		})
 		.ConfigureServices((context, services) =>
 		{
