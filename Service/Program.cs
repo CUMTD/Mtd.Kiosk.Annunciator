@@ -1,5 +1,6 @@
 using System.Reflection;
 using System.Runtime.InteropServices;
+using Azure.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -36,6 +37,16 @@ try
 			{
 				var assembly = Assembly.GetExecutingAssembly();
 				config.AddUserSecrets(assembly, true);
+			}
+
+			var configuration = config.Build();
+			var keyVaultUrl = configuration["KeyVaultUrl"];
+
+			if (!string.IsNullOrEmpty(keyVaultUrl))
+			{
+				config.AddAzureKeyVault(
+					new Uri(keyVaultUrl),
+					new DefaultAzureCredential());
 			}
 		})
 		.ConfigureServices((context, services) =>
@@ -130,7 +141,7 @@ try
 			_ = services.AddSingleton<IAnnunciator, AzureAnnunciator>();
 
 			// Services
-			_ = services.AddHostedService<AnnunciatorService>();
+			services.AddHostedService<AnnunciatorService>();
 			services.AddHostedService<HeartbeatWorker>();
 
 		})
